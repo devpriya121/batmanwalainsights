@@ -54,31 +54,6 @@ const tabContent = {
   },
 }
 
-const IGRowSkeleton = () => (
-  <div className="flex items-center justify-between mb-4">
-    <div
-      style={{
-        width: "65%",
-        height: "8px",
-        borderRadius: "999px",
-        background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
-        backgroundSize: "200% 100%",
-        animation: "shimmer 1.4s linear infinite",
-      }}
-    />
-    <div
-      style={{
-        width: "22%",
-        height: "8px",
-        borderRadius: "999px",
-        background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
-        backgroundSize: "200% 100%",
-        animation: "shimmer 1.4s linear infinite",
-      }}
-    />
-  </div>
-)
-
 // ===== ODOMETER STYLES =====
 const odometerKeyframes = `
 @keyframes rollDigit0 { 0% { transform: translateY(0); } 100% { transform: translateY(-90%); } }
@@ -2394,28 +2369,29 @@ export default function ReelInsights() {
       }}
     >
       <div
-        className="relative flex items-center gap-3 rounded-2xl pl-2 pr-4 py-2.5"
-      style={{ border: "1px solid rgba(255,255,255,0.08)" }}
-    >
-      {/* Close button */}
-      <button
-        className="absolute top-2 right-3 text-[#9aa0a6] active:opacity-60"
-        onClick={() => setShowGetEditsBanner(false)}
+        className="relative flex items-center gap-3 rounded-2xl pl-2 pr-4 py-4"
+        style={{ border: "1px solid rgba(255,255,255,0.08)" }}
       >
-        <CloseIcon />
-      </button>
+        {/* Close button */}
+        <button
+          className="absolute top-3 right-3 text-[#9aa0a6] active:opacity-60"
+          onClick={() => setShowGetEditsBanner(false)}
+        >
+          <CloseIcon />
+        </button>
 
-      {/* Left icon */}
-      <div
-        className="shrink-0 flex items-center justify-center"
-        style={{ width: 36, height: 36 }}
-      >
-        <img
-          src="/edits.webp"
-          alt="Edits Icon"
-          className="h-[22px] w-auto object-contain"
-        />
-      </div>
+        {/* Left icon */}
+                <div
+          className="shrink-0 flex items-center justify-center"
+          style={{ width: 44, height: 44 }}
+        >
+          <img
+            src="/edits.webp"
+            alt="Edits Icon"
+            className="h-[26px] w-auto object-contain"
+          />
+        </div>
+
         {/* Text */}
         <div className="flex-1 pr-4">
           <div className="text-[12px] font-semibold text-white leading-snug">
@@ -2424,7 +2400,7 @@ export default function ReelInsights() {
           <div className="text-[10px] text-white mt-1">
             You can now download your reel's insights and share them with others.
           </div>
-          <div className="text-[11px] text-[#8c9edd] mt-1 font-medium">
+          <div className="text-[11px] text-[#8c9edd] mt-1.5 font-medium">
             Get Edits
           </div>
         </div>
@@ -2691,49 +2667,7 @@ export default function ReelInsights() {
                     </div>
                   </section>
 
-<div className="px-4">
-  {/* VIEWS SECTION */}
-  <div className="mt-5">
-  <div className="text-white text-[16px] font-semibold mb-3">
-    Views
-  </div>
-
-  <div
-    style={{
-      width: "100%",
-      height: "14px",
-      borderRadius: "8px",
-      background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
-      backgroundSize: "200% 100%",
-      animation: "shimmer 1.4s linear infinite",
-    }}
-  />
-
-  <div className="flex justify-end mt-3">
-    <div
-      style={{
-        width: "25%",
-        height: "10px",
-        borderRadius: "6px",
-        background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
-        backgroundSize: "200% 100%",
-        animation: "shimmer 1.4s linear infinite",
-      }}
-    />
-  </div>
-</div>
-
-  {/* WHAT AFFECTS YOUR VIEWS SECTION */}
-  <div className="mt-6">
-    <div className="text-white text-[16px] font-semibold mb-4">
-      What affects your views
-    </div>
-    <IGRowSkeleton />
-    <IGRowSkeleton />
-  </div>
-</div>
-
-<section className="px-4 py-5">
+                  <section className="px-4 py-5">
                     <div className="flex items-center gap-2 mb-4"><h3 className="text-[15px] font-semibold">Interactions</h3><InfoIcon /></div>
                     <div className="space-y-3.5">
                       {[["Likes", insightsData.likes], ["Comments", insightsData.comments], ["Reposts", insightsData.reposts], ["Shares", insightsData.shares], ["Saves", insightsData.bookmarks]].map(([label, val]) => (
