@@ -2449,7 +2449,7 @@ export default function ReelInsights() {
             Content from Meta Verified subscribers get more views, likes and comments on average.
           </div>
           <div className="mt-2 text-[11px] font-semibold text-[#8c9edd] cursor-pointer">
-            Try Meta Verified for ₹45
+            Try Meta Verified for $14.99/mo
           </div>
         </div>
 
