@@ -22,6 +22,13 @@ const shimmerKeyframes = `
   from { opacity: 0; }
   to { opacity: 1; }
 }
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0%); }
+}
+.animate-slideUp {
+  animation: slideUp 0.25s ease-out;
+}
 @keyframes rollDigit0 { 0% { transform: translateY(0); } 100% { transform: translateY(-90%); } }
 @keyframes rollDigit1 { 0% { transform: translateY(0); } 100% { transform: translateY(-80%); } }
 @keyframes rollDigit2 { 0% { transform: translateY(0); } 100% { transform: translateY(-70%); } }
@@ -1720,6 +1727,7 @@ export default function ReelInsights() {
     return "meta"
   })
   const [showGetEditsBanner, setShowGetEditsBanner] = useState(true)
+ const [showViewOnEdits, setShowViewOnEdits] = useState(false)
     const overviewRef = useRef<HTMLDivElement>(null)
    const permanentGreyLine = useRef<number[]>([])
 
@@ -2222,7 +2230,15 @@ export default function ReelInsights() {
                 
                           <div
               className="relative w-[130px] h-[230px] bg-zinc-900 rounded-lg overflow-hidden cursor-pointer group shadow-lg"
-              onClick={() => { if (!locked) sharedThumbInputRef.current?.click() }}
+              onClick={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const clickX = e.clientX - rect.left
+                if (clickX > rect.width * 0.6) {
+                  setShowViewOnEdits(true)
+                } else {
+                  if (!locked) sharedThumbInputRef.current?.click()
+                }
+              }}
             >
               {(thumbnailUrl || thumbnailImage) ? (
                 <>
@@ -2780,7 +2796,35 @@ export default function ReelInsights() {
 
             </AnimatePresence>
           </main>
-
+{/* VIEW ON EDITS BOTTOM SHEET */}
+{showViewOnEdits && (
+  <div className="fixed inset-0 z-[80] flex items-end">
+    {/* BACKDROP */}
+    <div
+      className="absolute inset-0 bg-black/50"
+      onClick={() => setShowViewOnEdits(false)}
+    />
+    {/* SHEET */}
+    <div className="relative w-full rounded-t-2xl bg-[#111418] px-4 pb-8 pt-3 animate-slideUp">
+      {/* DRAG HANDLE */}
+      <div className="w-10 h-1.5 bg-gray-500/50 rounded-full mx-auto mb-4" />
+      {/* CONTENT */}
+      <div className="bg-[#1c1f24] rounded-xl px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <img
+            src="/edits.webp"
+            alt="Edits"
+            className="h-[22px] w-auto object-contain"
+          />
+          <span className="text-white text-[15px] font-medium">
+            View on Edits
+          </span>
+        </div>
+        <span className="text-gray-400 text-lg">›</span>
+      </div>
+    </div>
+  </div>
+)}
           <InsightEditorModal open={editorOpen} onOpenChange={setEditorOpen} data={insightsData} onSave={handleEditorSave} />
                         <BottomSheet 
             open={bottomSheetOpen} 
