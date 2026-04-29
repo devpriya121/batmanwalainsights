@@ -2693,12 +2693,35 @@ export default function ReelInsights() {
 
 <div className="px-4">
   {/* VIEWS SECTION */}
-  <div className="mt-6">
-    <div className="text-white text-[16px] font-semibold mb-4">
-      Views
-    </div>
-    <IGRowSkeleton />
+  <div className="mt-5">
+  <div className="text-white text-[16px] font-semibold mb-3">
+    Views
   </div>
+
+  <div
+    style={{
+      width: "100%",
+      height: "14px",
+      borderRadius: "8px",
+      background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
+      backgroundSize: "200% 100%",
+      animation: "shimmer 1.4s linear infinite",
+    }}
+  />
+
+  <div className="flex justify-end mt-3">
+    <div
+      style={{
+        width: "25%",
+        height: "10px",
+        borderRadius: "6px",
+        background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.4s linear infinite",
+      }}
+    />
+  </div>
+</div>
 
   {/* WHAT AFFECTS YOUR VIEWS SECTION */}
   <div className="mt-6">
