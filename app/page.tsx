@@ -54,6 +54,19 @@ const tabContent = {
   },
 }
 
+const ShimmerLine = ({ width = "100%", height = 8, radius = 999 }: { width?: string; height?: number; radius?: number }) => (
+  <div
+    style={{
+      width,
+      height,
+      borderRadius: radius,
+      background: "linear-gradient(90deg, transparent 30%, #3A3A3C 50%, transparent 70%)",
+      backgroundSize: "200% 100%",
+      animation: "shimmer 1.4s linear infinite",
+    }}
+  />
+)
+
 // ===== ODOMETER STYLES =====
 const odometerKeyframes = `
 @keyframes rollDigit0 { 0% { transform: translateY(0); } 100% { transform: translateY(-90%); } }
@@ -2666,7 +2679,34 @@ export default function ReelInsights() {
                     </div>
                   </section>
 
-                  <section className="px-4 py-5">
+{/* Instagram-style Shimmer Placeholders */}
+<div className="px-4">
+  {/* VIEWS SHIMMER BLOCK */}
+  <div className="mt-5 space-y-3">
+    <div className="text-white text-[16px] font-semibold">Views</div>
+    <div className="flex items-center justify-between gap-4">
+      <ShimmerLine width="70%" height={8} />
+      <ShimmerLine width="20%" height={8} />
+    </div>
+  </div>
+
+  {/* WHAT AFFECTS YOUR VIEWS BLOCK */}
+  <div className="mt-6 space-y-3">
+    <div className="text-white text-[16px] font-semibold">
+      What affects your views
+    </div>
+    <div className="flex items-center justify-between gap-4">
+      <ShimmerLine width="65%" height={8} />
+      <ShimmerLine width="25%" height={8} />
+    </div>
+    <div className="flex items-center justify-between gap-4">
+      <ShimmerLine width="55%" height={8} />
+      <ShimmerLine width="30%" height={8} />
+    </div>
+  </div>
+</div>
+
+<section className="px-4 py-5">
                     <div className="flex items-center gap-2 mb-4"><h3 className="text-[15px] font-semibold">Interactions</h3><InfoIcon /></div>
                     <div className="space-y-3.5">
                       {[["Likes", insightsData.likes], ["Comments", insightsData.comments], ["Reposts", insightsData.reposts], ["Shares", insightsData.shares], ["Saves", insightsData.bookmarks]].map(([label, val]) => (
