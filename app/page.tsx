@@ -2369,29 +2369,28 @@ export default function ReelInsights() {
       }}
     >
       <div
-        className="relative flex items-center gap-3 rounded-2xl pl-2 pr-4 py-4"
-        style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+        className="relative flex items-center gap-3 rounded-2xl pl-2 pr-4 py-2.5"
+      style={{ border: "1px solid rgba(255,255,255,0.08)" }}
+    >
+      {/* Close button */}
+      <button
+        className="absolute top-2 right-3 text-[#9aa0a6] active:opacity-60"
+        onClick={() => setShowGetEditsBanner(false)}
       >
-        {/* Close button */}
-        <button
-          className="absolute top-3 right-3 text-[#9aa0a6] active:opacity-60"
-          onClick={() => setShowGetEditsBanner(false)}
-        >
-          <CloseIcon />
-        </button>
+        <CloseIcon />
+      </button>
 
-        {/* Left icon */}
-                <div
-          className="shrink-0 flex items-center justify-center"
-          style={{ width: 44, height: 44 }}
-        >
-          <img
-            src="/edits.webp"
-            alt="Edits Icon"
-            className="h-[26px] w-auto object-contain"
-          />
-        </div>
-
+      {/* Left icon */}
+      <div
+        className="shrink-0 flex items-center justify-center"
+        style={{ width: 36, height: 36 }}
+      >
+        <img
+          src="/edits.webp"
+          alt="Edits Icon"
+          className="h-[22px] w-auto object-contain"
+        />
+      </div>
         {/* Text */}
         <div className="flex-1 pr-4">
           <div className="text-[12px] font-semibold text-white leading-snug">
@@ -2400,7 +2399,7 @@ export default function ReelInsights() {
           <div className="text-[10px] text-white mt-1">
             You can now download your reel's insights and share them with others.
           </div>
-          <div className="text-[11px] text-[#8c9edd] mt-1.5 font-medium">
+          <div className="text-[11px] text-[#8c9edd] mt-1 font-medium">
             Get Edits
           </div>
         </div>
