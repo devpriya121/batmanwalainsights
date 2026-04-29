@@ -2690,7 +2690,7 @@ export default function ReelInsights() {
               {mainTab === "Audience" && (
                 <motion.div key="audience" variants={tabContent} initial="initial" animate="animate" exit="exit">
                   <section className="px-4 pt-5 pb-3">
-                    <div className="flex items-center gap-2 mb-4"><h3 className="text-[15px] font-semibold">Who viewed your reel</h3><button onClick={() => setShowWhoViewedSheet(true)} className="focus:outline-none active:opacity-60"><InfoIcon /></button></div>
+                    <div className="flex items-center gap-2 mb-4"><h3 className="text-[15px] font-semibold">Who viewed your reel</h3><button type="button" onClick={() => setShowWhoViewedSheet(true)} className="focus:outline-none" style={{ WebkitTapHighlightColor: "transparent" }}><InfoIcon /></button></div>
                     <AudienceRow labelNode={<span>Followers</span>} percentage={insightsData.followerPercentage} barColor={PINK} animateCharts={animateCharts} delay={0} />
                     <AudienceRow labelNode={<span>Non-followers</span>} percentage={100 - insightsData.followerPercentage} barColor={PURPLE} animateCharts={animateCharts} delay={120} />
                   </section>
