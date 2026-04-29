@@ -9,7 +9,7 @@ import { InsightsData } from "@/lib/insights-state"
 
 const shimmerStyle = {
   background: "linear-gradient(90deg, transparent 30%, #3A3A3C 50%, transparent 70%)",
-  backgroundSize: "100% 200%",
+  backgroundSize: "200% 100%",
   animation: "shimmer 1.4s linear infinite",
 }
 
