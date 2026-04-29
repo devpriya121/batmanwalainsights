@@ -2478,8 +2478,8 @@ export default function ReelInsights() {
                           style={{ backgroundColor: CARD_BG, minHeight: 72, transform: "none" }}
                         >
                           {/* Shimmer overlay — sits on top, doesn't affect layout */}
-                          {summaryLoading && (
-                            <div className="absolute inset-0 z-10" style={{ ...shimmerStyle, animationDelay: `${i * 0.08}s` }} />
+                                                   {summaryLoading && (
+                            <div className="absolute inset-0 z-10" style={{ ...shimmerStyle }} />
                           )}
 
                           {/* Content — ALWAYS rendered to maintain fixed height */}
