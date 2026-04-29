@@ -54,17 +54,29 @@ const tabContent = {
   },
 }
 
-const ShimmerLine = ({ width = "100%", height = 8, radius = 999 }: { width?: string; height?: number; radius?: number }) => (
-  <div
-    style={{
-      width,
-      height,
-      borderRadius: radius,
-      background: "linear-gradient(90deg, transparent 30%, #3A3A3C 50%, transparent 70%)",
-      backgroundSize: "200% 100%",
-      animation: "shimmer 1.4s linear infinite",
-    }}
-  />
+const IGRowSkeleton = () => (
+  <div className="flex items-center justify-between mb-4">
+    <div
+      style={{
+        width: "65%",
+        height: "8px",
+        borderRadius: "999px",
+        background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.4s linear infinite",
+      }}
+    />
+    <div
+      style={{
+        width: "22%",
+        height: "8px",
+        borderRadius: "999px",
+        background: "linear-gradient(90deg, #1f1f1f 25%, #3A3A3C 50%, #1f1f1f 75%)",
+        backgroundSize: "200% 100%",
+        animation: "shimmer 1.4s linear infinite",
+      }}
+    />
+  </div>
 )
 
 // ===== ODOMETER STYLES =====
@@ -2679,30 +2691,22 @@ export default function ReelInsights() {
                     </div>
                   </section>
 
-{/* Instagram-style Shimmer Placeholders */}
 <div className="px-4">
-  {/* VIEWS SHIMMER BLOCK */}
-  <div className="mt-5 space-y-3">
-    <div className="text-white text-[16px] font-semibold">Views</div>
-    <div className="flex items-center justify-between gap-4">
-      <ShimmerLine width="70%" height={8} />
-      <ShimmerLine width="20%" height={8} />
+  {/* VIEWS SECTION */}
+  <div className="mt-6">
+    <div className="text-white text-[16px] font-semibold mb-4">
+      Views
     </div>
+    <IGRowSkeleton />
   </div>
 
-  {/* WHAT AFFECTS YOUR VIEWS BLOCK */}
-  <div className="mt-6 space-y-3">
-    <div className="text-white text-[16px] font-semibold">
+  {/* WHAT AFFECTS YOUR VIEWS SECTION */}
+  <div className="mt-6">
+    <div className="text-white text-[16px] font-semibold mb-4">
       What affects your views
     </div>
-    <div className="flex items-center justify-between gap-4">
-      <ShimmerLine width="65%" height={8} />
-      <ShimmerLine width="25%" height={8} />
-    </div>
-    <div className="flex items-center justify-between gap-4">
-      <ShimmerLine width="55%" height={8} />
-      <ShimmerLine width="30%" height={8} />
-    </div>
+    <IGRowSkeleton />
+    <IGRowSkeleton />
   </div>
 </div>
 
