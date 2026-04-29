@@ -2790,14 +2790,14 @@ export default function ReelInsights() {
   <>
     {/* BACKDROP */}
     <div
-      onClick={() => setShowWhoViewedSheet(false)}
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.5)",
-        zIndex: 40,
-      }}
-    />
+  onClick={() => setShowWhoViewedSheet(false)}
+  style={{
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.5)",
+    zIndex: 90,
+  }}
+/>
     {/* SHEET */}
     <div
       style={{
@@ -2810,7 +2810,7 @@ export default function ReelInsights() {
         borderTopRightRadius: "20px",
         padding: "16px",
         paddingBottom: "32px",
-        zIndex: 50,
+        zIndex: 100,
         animation: "slideUp 0.25s ease-out",
       }}
     >
