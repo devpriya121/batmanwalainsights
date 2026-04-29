@@ -26,9 +26,6 @@ const shimmerKeyframes = `
   from { transform: translateY(100%); }
   to { transform: translateY(0%); }
 }
-.animate-slideUp {
-  animation: slideUp 0.25s ease-out;
-}
 @keyframes rollDigit0 { 0% { transform: translateY(0); } 100% { transform: translateY(-90%); } }
 @keyframes rollDigit1 { 0% { transform: translateY(0); } 100% { transform: translateY(-80%); } }
 @keyframes rollDigit2 { 0% { transform: translateY(0); } 100% { transform: translateY(-70%); } }
@@ -1727,7 +1724,7 @@ export default function ReelInsights() {
     return "meta"
   })
   const [showGetEditsBanner, setShowGetEditsBanner] = useState(true)
- const [showViewOnEdits, setShowViewOnEdits] = useState(false)
+ const [showWhoViewedSheet, setShowWhoViewedSheet] = useState(false)
     const overviewRef = useRef<HTMLDivElement>(null)
    const permanentGreyLine = useRef<number[]>([])
 
@@ -2230,15 +2227,7 @@ export default function ReelInsights() {
                 
                           <div
               className="relative w-[130px] h-[230px] bg-zinc-900 rounded-lg overflow-hidden cursor-pointer group shadow-lg"
-              onClick={(e) => {
-                const rect = e.currentTarget.getBoundingClientRect()
-                const clickX = e.clientX - rect.left
-                if (clickX > rect.width * 0.6) {
-                  setShowViewOnEdits(true)
-                } else {
-                  if (!locked) sharedThumbInputRef.current?.click()
-                }
-              }}
+              onClick={() => { if (!locked) sharedThumbInputRef.current?.click() }}
             >
               {(thumbnailUrl || thumbnailImage) ? (
                 <>
@@ -2701,7 +2690,7 @@ export default function ReelInsights() {
               {mainTab === "Audience" && (
                 <motion.div key="audience" variants={tabContent} initial="initial" animate="animate" exit="exit">
                   <section className="px-4 pt-5 pb-3">
-                    <div className="flex items-center gap-2 mb-4"><h3 className="text-[15px] font-semibold">Who viewed your reel</h3><InfoIcon /></div>
+                    <div className="flex items-center gap-2 mb-4"><h3 className="text-[15px] font-semibold">Who viewed your reel</h3><button onClick={() => setShowWhoViewedSheet(true)} className="focus:outline-none active:opacity-60"><InfoIcon /></button></div>
                     <AudienceRow labelNode={<span>Followers</span>} percentage={insightsData.followerPercentage} barColor={PINK} animateCharts={animateCharts} delay={0} />
                     <AudienceRow labelNode={<span>Non-followers</span>} percentage={100 - insightsData.followerPercentage} barColor={PURPLE} animateCharts={animateCharts} delay={120} />
                   </section>
@@ -2796,34 +2785,66 @@ export default function ReelInsights() {
 
             </AnimatePresence>
           </main>
-{/* VIEW ON EDITS BOTTOM SHEET */}
-{showViewOnEdits && (
-  <div className="fixed inset-0 z-[80] flex items-end">
+{/* WHO VIEWED BOTTOM SHEET */}
+{showWhoViewedSheet && (
+  <>
     {/* BACKDROP */}
     <div
-      className="absolute inset-0 bg-black/50"
-      onClick={() => setShowViewOnEdits(false)}
+      onClick={() => setShowWhoViewedSheet(false)}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.5)",
+        zIndex: 40,
+      }}
     />
     {/* SHEET */}
-    <div className="relative w-full rounded-t-2xl bg-[#111418] px-4 pb-8 pt-3 animate-slideUp">
+    <div
+      style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        background: "#121212",
+        borderTopLeftRadius: "20px",
+        borderTopRightRadius: "20px",
+        padding: "16px",
+        paddingBottom: "32px",
+        zIndex: 50,
+        animation: "slideUp 0.25s ease-out",
+      }}
+    >
       {/* DRAG HANDLE */}
-      <div className="w-10 h-1.5 bg-gray-500/50 rounded-full mx-auto mb-4" />
-      {/* CONTENT */}
-      <div className="bg-[#1c1f24] rounded-xl px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img
-            src="/edits.webp"
-            alt="Edits"
-            className="h-[22px] w-auto object-contain"
-          />
-          <span className="text-white text-[15px] font-medium">
+      <div
+        style={{
+          width: "40px",
+          height: "4px",
+          background: "#3a3a3c",
+          borderRadius: "999px",
+          margin: "0 auto 16px auto",
+        }}
+      />
+      {/* CONTENT BOX */}
+      <div
+        style={{
+          background: "#1c1c1e",
+          borderRadius: "16px",
+          padding: "14px 16px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <img src="/edits.webp" style={{ height: "20px" }} alt="Edits" />
+          <span style={{ color: "#fff", fontSize: "14px" }}>
             View on Edits
           </span>
         </div>
-        <span className="text-gray-400 text-lg">›</span>
+        <span style={{ color: "#8e8e93", fontSize: "18px" }}>›</span>
       </div>
     </div>
-  </div>
+  </>
 )}
           <InsightEditorModal open={editorOpen} onOpenChange={setEditorOpen} data={insightsData} onSave={handleEditorSave} />
                         <BottomSheet 
