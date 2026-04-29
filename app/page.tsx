@@ -1720,7 +1720,6 @@ export default function ReelInsights() {
     return "meta"
   })
   const [showGetEditsBanner, setShowGetEditsBanner] = useState(true)
- const [showViewOnEdits, setShowViewOnEdits] = useState(false)
     const overviewRef = useRef<HTMLDivElement>(null)
    const permanentGreyLine = useRef<number[]>([])
 
@@ -2223,7 +2222,7 @@ export default function ReelInsights() {
                 
                           <div
               className="relative w-[130px] h-[230px] bg-zinc-900 rounded-lg overflow-hidden cursor-pointer group shadow-lg"
-              onClick={() => { if (!locked) sharedThumbInputRef.current?.click(); else setShowViewOnEdits(true) }}
+              onClick={() => { if (!locked) sharedThumbInputRef.current?.click() }}
             >
               {(thumbnailUrl || thumbnailImage) ? (
                 <>
@@ -2781,37 +2780,7 @@ export default function ReelInsights() {
 
             </AnimatePresence>
           </main>
-{/* VIEW ON EDITS BOTTOM SHEET */}
-{showViewOnEdits && (
-  <div className="fixed inset-0 z-[80] flex items-end">
-    {/* BACKDROP */}
-    <div
-      className="absolute inset-0 bg-black/50"
-      onClick={() => setShowViewOnEdits(false)}
-    />
-    {/* SHEET */}
-    <div className="relative w-full rounded-t-2xl bg-[#0c0f14] p-4 pb-8">
-      {/* DRAG HANDLE */}
-      <div className="w-10 h-1.5 bg-gray-500 rounded-full mx-auto mb-4 opacity-50" />
-      {/* ACTION CARD */}
-      <div className="flex items-center justify-between bg-[#1c1f24] rounded-xl px-4 py-4">
-        {/* LEFT */}
-        <div className="flex items-center gap-3">
-          <img
-            src="/edits.webp"
-            alt="Edits"
-            className="h-[22px] w-auto object-contain"
-          />
-          <span className="text-white text-[15px] font-medium">
-            View on Edits
-          </span>
-        </div>
-        {/* RIGHT ARROW */}
-        <span className="text-gray-400 text-xl">›</span>
-      </div>
-    </div>
-  </div>
-)}
+
           <InsightEditorModal open={editorOpen} onOpenChange={setEditorOpen} data={insightsData} onSave={handleEditorSave} />
                         <BottomSheet 
             open={bottomSheetOpen} 
