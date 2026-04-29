@@ -8,7 +8,7 @@ import { useInsightsStorage } from "@/hooks/useInsightsStorage"
 import { InsightsData } from "@/lib/insights-state"
 
 const shimmerStyle = {
-  background: "linear-gradient(180deg, transparent 30%, #3A3A3C 50%, transparent 70%)",
+  background: "linear-gradient(0deg, transparent 30%, #3A3A3C 50%, transparent 70%)",
   backgroundSize: "100% 200%",
   animation: "shimmer 1.4s linear infinite",
 }
