@@ -8,15 +8,15 @@ import { useInsightsStorage } from "@/hooks/useInsightsStorage"
 import { InsightsData } from "@/lib/insights-state"
 
 const shimmerStyle = {
-  background: "linear-gradient(110deg, transparent 30%, #3A3A3C 50%, transparent 70%)",
-  backgroundSize: "200% 100%",
+  background: "linear-gradient(180deg, transparent 30%, #3A3A3C 50%, transparent 70%)",
+  backgroundSize: "100% 200%",
   animation: "shimmer 1.4s linear infinite",
 }
 
 const shimmerKeyframes = `
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% { background-position: 0 200%; }
+  100% { background-position: 0 -200%; }
 }
 @keyframes fadeIn {
   from { opacity: 0; }
