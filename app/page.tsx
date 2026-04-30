@@ -1499,6 +1499,27 @@ const DraggableGraph = ({
   />
 )}
 
+        {/* Main pink line - 3/4 length */}
+        <path
+          d={pathD}
+          fill="none"
+          stroke={PINK}
+          strokeWidth={5}
+          strokeLinecap="round"
+        />
+
+{activeIndexViews !== null && (
+  <line
+    x1={getThisReelX(activeIndexViews)}
+    x2={getThisReelX(activeIndexViews)}
+    y1={padding.top}
+    y2={height - padding.bottom}
+    stroke="#6b7280"
+    strokeDasharray="4 4"
+    strokeWidth="1"
+  />
+)}
+
 {activeIndexViews !== null && (
   <circle
     cx={getThisReelX(activeIndexViews)}
@@ -1509,15 +1530,6 @@ const DraggableGraph = ({
     strokeWidth={2}
   />
 )}
-        {/* Main pink line - 3/4 length */}
-        <path
-          d={pathD}
-          fill="none"
-          stroke={PINK}
-          strokeWidth={5}
-          strokeLinecap="round"
-        />
-
                                                 {visiblePinkData.map((d, i) => (
           <circle
             key={`tr-${i}`}
@@ -1710,9 +1722,57 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
             opacity="0.5"
           />
         ))}
-             <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
+                          <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
+
+{activeIndexEngagement !== null && (
+  <line
+    x1={getX(activeIndexEngagement)}
+    x2={getX(activeIndexEngagement)}
+    y1={padding.top}
+    y2={height - padding.bottom}
+    stroke="#6b7280"
+    strokeDasharray="4 4"
+    strokeWidth="1"
+  />
+)}
+
+{activeIndexEngagement !== null && (
+  <circle
+    cx={getX(activeIndexEngagement)}
+    cy={getY(data[activeIndexEngagement].value)}
+    r={5}
+    fill="#d939cf"
+    stroke="#000"
+    strokeWidth={2}
+  />
+)}
+
         {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.value)} r={18} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
       </svg>
+
+{activeIndexEngagement !== null && (
+  <div
+    style={{
+      position: "absolute",
+      left: `calc(${(getX(activeIndexEngagement) / width) * 100}% - 40px)`,
+      top: `calc(${(getY(data[activeIndexEngagement].value) / height) * 100}% - 55px)`,
+      background: "#1c1c1e",
+      padding: "6px 10px",
+      borderRadius: "12px",
+      fontSize: "12px",
+      color: "#fff",
+      pointerEvents: "none",
+      whiteSpace: "nowrap"
+    }}
+  >
+    <div style={{ fontWeight: 600 }}>
+      {Math.round(data[activeIndexEngagement].value)}%
+    </div>
+    <div style={{ fontSize: "11px", color: "#aaa" }}>
+      {data[activeIndexEngagement].time}
+    </div>
+  </div>
+)}
     </div>
   )
 }
