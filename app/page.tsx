@@ -1254,6 +1254,7 @@ const DraggableGraph = ({
 }) => {
   const svgRef = useRef<SVGSVGElement>(null)
   const [dragging, setDragging] = useState<{ index: number; line: "thisReel" | "typical" } | null>(null)
+ const [activeIndexViews, setActiveIndexViews] = useState<number | null>(null)
     const [xLabels, setXLabels] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem("graph-x-labels")
@@ -1394,13 +1395,36 @@ const DraggableGraph = ({
         </div>
       )}
       <svg
-        ref={svgRef}
-        viewBox={`0 0 ${width} ${height}`}
-        className={`w-full select-none ${locked ? "" : "touch-none"}`}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerLeave={handlePointerUp}
-      >
+  ref={svgRef}
+  viewBox={`0 0 ${width} ${height}`}
+  className={`w-full select-none ${locked ? "" : "touch-none"}`}
+  onPointerMove={handlePointerMove}
+  onPointerUp={handlePointerUp}
+  onPointerLeave={handlePointerUp}
+
+  onMouseMove={(e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const pinkWidth = chartW * 0.75
+    const relativeX = Math.max(0, Math.min(pinkWidth, x - padding.left))
+    const index = Math.round((relativeX / pinkWidth) * (visiblePinkData.length - 1))
+    setActiveIndexViews(index)
+  }}
+
+  onMouseLeave={() => setActiveIndexViews(null)}
+
+  onTouchMove={(e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const touch = e.touches[0]
+    const x = touch.clientX - rect.left
+    const pinkWidth = chartW * 0.75
+    const relativeX = Math.max(0, Math.min(pinkWidth, x - padding.left))
+    const index = Math.round((relativeX / pinkWidth) * (visiblePinkData.length - 1))
+    setActiveIndexViews(index)
+  }}
+
+  onTouchEnd={() => setActiveIndexViews(null)}
+>
                         {displayYLabels.map((label, i) => (
           <text
             key={`yt-${i}`}
@@ -1463,7 +1487,28 @@ const DraggableGraph = ({
           strokeDasharray="6 6"
           strokeLinecap="round"
         />
+{activeIndexViews !== null && (
+  <line
+    x1={getThisReelX(activeIndexViews)}
+    x2={getThisReelX(activeIndexViews)}
+    y1={padding.top}
+    y2={height - padding.bottom}
+    stroke="#6b7280"
+    strokeDasharray="4 4"
+    strokeWidth="1"
+  />
+)}
 
+{activeIndexViews !== null && (
+  <circle
+    cx={getThisReelX(activeIndexViews)}
+    cy={getY(visiblePinkData[activeIndexViews].thisReel)}
+    r={5}
+    fill="#d939cf"
+    stroke="#000"
+    strokeWidth={2}
+  />
+)}
         {/* Main pink line - 3/4 length */}
         <path
           d={pathD}
@@ -1486,6 +1531,29 @@ const DraggableGraph = ({
           />
         ))}
       </svg>
+     {activeIndexViews !== null && (
+  <div
+    style={{
+      position: "absolute",
+      left: `calc(${(getThisReelX(activeIndexViews) / width) * 100}% - 40px)`,
+      top: `calc(${(getY(visiblePinkData[activeIndexViews].thisReel) / height) * 100}% - 60px)`,
+      background: "#1c1c1e",
+      padding: "6px 10px",
+      borderRadius: "12px",
+      fontSize: "12px",
+      color: "#fff",
+      pointerEvents: "none",
+      whiteSpace: "nowrap"
+    }}
+  >
+    <div style={{ fontWeight: 600 }}>
+      {visiblePinkData[activeIndexViews].thisReel.toLocaleString("en-IN")}
+    </div>
+    <div style={{ fontSize: "11px", color: "#aaa" }}>
+      {visiblePinkData[activeIndexViews].date}
+    </div>
+  </div>
+)}
 
       <div className="flex items-center gap-6 mt-3 pl-4">
         <div className="flex items-center gap-2">
@@ -1507,6 +1575,7 @@ type EngagementPoint = { time: string; value: number }
 const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { data: EngagementPoint[]; onChange: (d: EngagementPoint[]) => void; locked: boolean; videoDuration: string }) => {
   const svgRef = useRef<SVGSVGElement>(null)
   const [dragging, setDragging] = useState<number | null>(null)
+ const [activeIndexEngagement, setActiveIndexEngagement] = useState<number | null>(null)
   const [editingRightX, setEditingRightX] = useState(false)
   const [rightXValue, setRightXValue] = useState("")
   const [editingY, setEditingY] = useState<number | null>(null)
@@ -1581,7 +1650,33 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
           />
         </div>
       )}
-      <svg ref={svgRef} viewBox={`0 0 ${width} ${height}`} className={`w-full select-none ${locked ? "" : "touch-none"}`} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerLeave={handlePointerUp}>
+      <svg
+  ref={svgRef}
+  viewBox={`0 0 ${width} ${height}`}
+  className={`w-full select-none ${locked ? "" : "touch-none"}`}
+  onPointerMove={handlePointerMove}
+  onPointerUp={handlePointerUp}
+  onPointerLeave={handlePointerUp}
+
+  onMouseMove={(e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const index = Math.round((x / rect.width) * (data.length - 1))
+    setActiveIndexEngagement(index)
+  }}
+
+  onMouseLeave={() => setActiveIndexEngagement(null)}
+
+  onTouchMove={(e) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const touch = e.touches[0]
+    const x = touch.clientX - rect.left
+    const index = Math.round((x / rect.width) * (data.length - 1))
+    setActiveIndexEngagement(index)
+  }}
+
+  onTouchEnd={() => setActiveIndexEngagement(null)}
+>
                 {[0, 50, 100].map((t, i) => (
           <text
             key={t}
