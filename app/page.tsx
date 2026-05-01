@@ -1522,21 +1522,21 @@ const DraggableGraph = ({
         ))}
       </svg>
 
-      {activeIndexViews !== null && (
+            {activeIndexViews !== null && (
         <div
           style={{
             position: "absolute",
-            left: `calc(${(getThisReelX(activeIndexViews) / width) * 100}% - 50px)`,
+            left: `calc(${(getThisReelX(activeIndexViews) / width) * 100}% - 40px)`,
             top: `calc(${(getY(visiblePinkData[activeIndexViews].thisReel) / height) * 100}% - 62px)`,
             background: "#1c1c1e",
-            padding: "7px 16px",
+            padding: "6px 12px",
             borderRadius: "12px",
             fontSize: "12px",
             color: "#fff",
             pointerEvents: "none",
             whiteSpace: "nowrap",
             textAlign: "center",
-            minWidth: "100px"
+            minWidth: "80px"
           }}
         >
           <div style={{ fontWeight: 600, textAlign: "center" }}>
@@ -1712,21 +1712,21 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
         {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.value)} r={18} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
       </svg>
 
-      {activeIndexEngagement !== null && (
+            {activeIndexEngagement !== null && (
         <div
           style={{
             position: "absolute",
-            left: `calc(${(getX(activeIndexEngagement) / width) * 100}% - 50px)`,
+            left: `calc(${(getX(activeIndexEngagement) / width) * 100}% - 40px)`,
             top: `calc(${(getY(data[activeIndexEngagement].value) / height) * 100}% - 57px)`,
             background: "#1c1c1e",
-            padding: "7px 16px",
+            padding: "6px 12px",
             borderRadius: "12px",
             fontSize: "12px",
             color: "#fff",
             pointerEvents: "none",
             whiteSpace: "nowrap",
             textAlign: "center",
-            minWidth: "100px"
+            minWidth: "80px"
           }}
         >
           <div style={{ fontWeight: 600, textAlign: "center" }}>
@@ -1812,21 +1812,21 @@ const DraggableRetentionGraph = ({ data, onChange, locked, videoDuration }: { da
         {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.retention)} r={16} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
       </svg>
 
-      {activeIndexRetention !== null && (
+            {activeIndexRetention !== null && (
         <div
           style={{
             position: "absolute",
-            left: `calc(${(getX(activeIndexRetention) / width) * 100}% - 50px)`,
+            left: `calc(${(getX(activeIndexRetention) / width) * 100}% - 40px)`,
             top: `calc(${(getY(data[activeIndexRetention].retention) / height) * 100}% - 57px)`,
             background: "#1c1c1e",
-            padding: "7px 16px",
+            padding: "6px 12px",
             borderRadius: "12px",
             fontSize: "12px",
             color: "#fff",
             pointerEvents: "none",
             whiteSpace: "nowrap",
             textAlign: "center",
-            minWidth: "100px"
+            minWidth: "80px"
           }}
         >
           <div style={{ fontWeight: 600, textAlign: "center" }}>
