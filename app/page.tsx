@@ -1496,13 +1496,14 @@ const DraggableGraph = ({
           strokeLinecap="round"
         />
 
-        {activeIndexViews !== null && (
+                {activeIndexViews !== null && (
           <line
             x1={getThisReelX(activeIndexViews)}
             x2={getThisReelX(activeIndexViews)}
             y1={padding.top}
             y2={height - padding.bottom}
             stroke="#ffffff"
+            strokeDasharray="4 4"
             strokeWidth="1"
             pointerEvents="none"
           />
@@ -1706,8 +1707,17 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
                                                     <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
 
         {activeIndexEngagement !== null && (
-          <line x1={getX(activeIndexEngagement)} x2={getX(activeIndexEngagement)} y1={padding.top} y2={height - padding.bottom} stroke="#ffffff" strokeWidth="1" pointerEvents="none" />
-        )}
+  <line
+    x1={getX(activeIndexEngagement)}
+    x2={getX(activeIndexEngagement)}
+    y1={padding.top}
+    y2={height - padding.bottom}
+    stroke="#ffffff"
+    strokeDasharray="4 4"
+    strokeWidth="1"
+    pointerEvents="none"
+  />
+)}
 
         {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.value)} r={18} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
       </svg>
@@ -1805,8 +1815,8 @@ const DraggableRetentionGraph = ({ data, onChange, locked, videoDuration }: { da
         ))}
                           <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" />
 
-        {activeIndexRetention !== null && (
-          <line x1={getX(activeIndexRetention)} x2={getX(activeIndexRetention)} y1={padding.top} y2={height - padding.bottom} stroke="#ffffff" strokeWidth="1" pointerEvents="none" />
+                {activeIndexRetention !== null && (
+          <line x1={getX(activeIndexRetention)} x2={getX(activeIndexRetention)} y1={padding.top} y2={height - padding.bottom} stroke="#ffffff" strokeDasharray="4 4" strokeWidth="1" pointerEvents="none" />
         )}
 
         {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.retention)} r={16} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
