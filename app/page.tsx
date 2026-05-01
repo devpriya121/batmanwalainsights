@@ -1487,18 +1487,6 @@ const DraggableGraph = ({
           strokeDasharray="6 6"
           strokeLinecap="round"
         />
-{activeIndexViews !== null && (
-  <line
-    x1={getThisReelX(activeIndexViews)}
-    x2={getThisReelX(activeIndexViews)}
-    y1={padding.top}
-    y2={height - padding.bottom}
-    stroke="#6b7280"
-    strokeDasharray="4 4"
-    strokeWidth="1"
-  />
-)}
-
         {/* Main pink line - 3/4 length */}
         <path
           d={pathD}
@@ -1508,29 +1496,19 @@ const DraggableGraph = ({
           strokeLinecap="round"
         />
 
-{activeIndexViews !== null && (
-  <line
-    x1={getThisReelX(activeIndexViews)}
-    x2={getThisReelX(activeIndexViews)}
-    y1={padding.top}
-    y2={height - padding.bottom}
-    stroke="#6b7280"
-    strokeDasharray="4 4"
-    strokeWidth="1"
-  />
-)}
+        {activeIndexViews !== null && (
+          <line
+            x1={getThisReelX(activeIndexViews)}
+            x2={getThisReelX(activeIndexViews)}
+            y1={padding.top}
+            y2={height - padding.bottom}
+            stroke="#ffffff"
+            strokeWidth="1"
+            pointerEvents="none"
+          />
+        )}
 
-{activeIndexViews !== null && (
-  <circle
-    cx={getThisReelX(activeIndexViews)}
-    cy={getY(visiblePinkData[activeIndexViews].thisReel)}
-    r={5}
-    fill="#d939cf"
-    stroke="#000"
-    strokeWidth={2}
-  />
-)}
-                                                {visiblePinkData.map((d, i) => (
+        {visiblePinkData.map((d, i) => (
           <circle
             key={`tr-${i}`}
             cx={getThisReelX(i)}
@@ -1543,29 +1521,32 @@ const DraggableGraph = ({
           />
         ))}
       </svg>
-     {activeIndexViews !== null && (
-  <div
-    style={{
-      position: "absolute",
-      left: `calc(${(getThisReelX(activeIndexViews) / width) * 100}% - 40px)`,
-      top: `calc(${(getY(visiblePinkData[activeIndexViews].thisReel) / height) * 100}% - 60px)`,
-      background: "#1c1c1e",
-      padding: "6px 10px",
-      borderRadius: "12px",
-      fontSize: "12px",
-      color: "#fff",
-      pointerEvents: "none",
-      whiteSpace: "nowrap"
-    }}
-  >
-    <div style={{ fontWeight: 600 }}>
-      {visiblePinkData[activeIndexViews].thisReel.toLocaleString("en-IN")}
-    </div>
-    <div style={{ fontSize: "11px", color: "#aaa" }}>
-      {visiblePinkData[activeIndexViews].date}
-    </div>
-  </div>
-)}
+
+      {activeIndexViews !== null && (
+        <div
+          style={{
+            position: "absolute",
+            left: `calc(${(getThisReelX(activeIndexViews) / width) * 100}% - 50px)`,
+            top: `calc(${(getY(visiblePinkData[activeIndexViews].thisReel) / height) * 100}% - 62px)`,
+            background: "#1c1c1e",
+            padding: "7px 16px",
+            borderRadius: "12px",
+            fontSize: "12px",
+            color: "#fff",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+            textAlign: "center",
+            minWidth: "100px"
+          }}
+        >
+          <div style={{ fontWeight: 600, textAlign: "center" }}>
+            {visiblePinkData[activeIndexViews].thisReel.toLocaleString("en-IN")}
+          </div>
+          <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px", textAlign: "center" }}>
+            {visiblePinkData[activeIndexViews].date}
+          </div>
+        </div>
+      )}
 
       <div className="flex items-center gap-6 mt-3 pl-4">
         <div className="flex items-center gap-2">
@@ -1722,57 +1703,40 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
             opacity="0.5"
           />
         ))}
-                          <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
+                                                    <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
 
-{activeIndexEngagement !== null && (
-  <line
-    x1={getX(activeIndexEngagement)}
-    x2={getX(activeIndexEngagement)}
-    y1={padding.top}
-    y2={height - padding.bottom}
-    stroke="#6b7280"
-    strokeDasharray="4 4"
-    strokeWidth="1"
-  />
-)}
-
-{activeIndexEngagement !== null && (
-  <circle
-    cx={getX(activeIndexEngagement)}
-    cy={getY(data[activeIndexEngagement].value)}
-    r={5}
-    fill="#d939cf"
-    stroke="#000"
-    strokeWidth={2}
-  />
-)}
+        {activeIndexEngagement !== null && (
+          <line x1={getX(activeIndexEngagement)} x2={getX(activeIndexEngagement)} y1={padding.top} y2={height - padding.bottom} stroke="#ffffff" strokeWidth="1" pointerEvents="none" />
+        )}
 
         {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.value)} r={18} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
       </svg>
 
-{activeIndexEngagement !== null && (
-  <div
-    style={{
-      position: "absolute",
-      left: `calc(${(getX(activeIndexEngagement) / width) * 100}% - 40px)`,
-      top: `calc(${(getY(data[activeIndexEngagement].value) / height) * 100}% - 55px)`,
-      background: "#1c1c1e",
-      padding: "6px 10px",
-      borderRadius: "12px",
-      fontSize: "12px",
-      color: "#fff",
-      pointerEvents: "none",
-      whiteSpace: "nowrap"
-    }}
-  >
-    <div style={{ fontWeight: 600 }}>
-      {Math.round(data[activeIndexEngagement].value)}%
-    </div>
-    <div style={{ fontSize: "11px", color: "#aaa" }}>
-      {data[activeIndexEngagement].time}
-    </div>
-  </div>
-)}
+      {activeIndexEngagement !== null && (
+        <div
+          style={{
+            position: "absolute",
+            left: `calc(${(getX(activeIndexEngagement) / width) * 100}% - 50px)`,
+            top: `calc(${(getY(data[activeIndexEngagement].value) / height) * 100}% - 57px)`,
+            background: "#1c1c1e",
+            padding: "7px 16px",
+            borderRadius: "12px",
+            fontSize: "12px",
+            color: "#fff",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+            textAlign: "center",
+            minWidth: "100px"
+          }}
+        >
+          <div style={{ fontWeight: 600, textAlign: "center" }}>
+            {Math.round(data[activeIndexEngagement].value)}%
+          </div>
+          <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px", textAlign: "center" }}>
+            {data[activeIndexEngagement].time}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -1781,7 +1745,8 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
 type RetentionPoint = { time: string; retention: number }
 const DraggableRetentionGraph = ({ data, onChange, locked, videoDuration }: { data: RetentionPoint[]; onChange: (d: RetentionPoint[]) => void; locked: boolean; videoDuration: string }) => {
   const svgRef = useRef<SVGSVGElement>(null)
-  const [dragging, setDragging] = useState<number | null>(null)
+    const [dragging, setDragging] = useState<number | null>(null)
+  const [activeIndexRetention, setActiveIndexRetention] = useState<number | null>(null)
   const [editingRightX, setEditingRightX] = useState(false)
   const [rightXValue, setRightXValue] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -1807,7 +1772,22 @@ const DraggableRetentionGraph = ({ data, onChange, locked, videoDuration }: { da
   return (
     <div className="relative -mx-1">
       {editingRightX && <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"><input ref={inputRef} value={rightXValue} onChange={e => setRightXValue(e.target.value)} onBlur={commitRightX} onKeyDown={e => { if (e.key === "Enter") commitRightX() }} className="pointer-events-auto bg-zinc-800 border border-fuchsia-500 rounded-lg px-3 py-1.5 text-[13px] text-white text-center w-[100px] outline-none shadow-lg" style={{ caretColor: PINK }} /></div>}
-            <svg ref={svgRef} viewBox={`0 0 ${width} ${height}`} className={`w-full select-none ${locked ? "" : "touch-none"}`} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerLeave={handlePointerUp}>
+                        <svg ref={svgRef} viewBox={`0 0 ${width} ${height}`} className={`w-full select-none ${locked ? "" : "touch-none"}`} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp} onPointerLeave={handlePointerUp}
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const idx = Math.round(((x / rect.width) * width - padding.left) / chartW * (data.length - 1))
+        setActiveIndexRetention(Math.max(0, Math.min(data.length - 1, idx)))
+      }}
+      onMouseLeave={() => setActiveIndexRetention(null)}
+      onTouchMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect()
+        const x = e.touches[0].clientX - rect.left
+        const idx = Math.round(((x / rect.width) * width - padding.left) / chartW * (data.length - 1))
+        setActiveIndexRetention(Math.max(0, Math.min(data.length - 1, idx)))
+      }}
+      onTouchEnd={() => setActiveIndexRetention(null)}
+            >
         {[0, 50, 100].map(t => <text key={t} x={padding.left - 8} y={getY(t) + 4} textAnchor="end" fill="#d1d5db" fontSize="13" fontFamily="sans-serif">{t === 0 ? "0" : `${t}%`}</text>)}
                 <text x={getX(0) + 18} y={height - 7} textAnchor="middle" fill="#d1d5db" fontSize="13" fontFamily="sans-serif">0:00</text>
         <text x={getX(lastIdx) - 6} y={height - 7} textAnchor="middle" fill={editingRightX ? PINK : "#d1d5db"} fontSize="13" fontFamily="sans-serif" className={locked ? "cursor-default" : "cursor-pointer"} onClick={() => { if (locked) return; setRightXValue(dynamicDurLabel); setEditingRightX(true) }}>{dynamicDurLabel}</text>
@@ -1823,9 +1803,40 @@ const DraggableRetentionGraph = ({ data, onChange, locked, videoDuration }: { da
             opacity="0.5"
           />
         ))}
-             <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" />
+                          <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" />
+
+        {activeIndexRetention !== null && (
+          <line x1={getX(activeIndexRetention)} x2={getX(activeIndexRetention)} y1={padding.top} y2={height - padding.bottom} stroke="#ffffff" strokeWidth="1" pointerEvents="none" />
+        )}
+
         {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.retention)} r={16} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
       </svg>
+
+      {activeIndexRetention !== null && (
+        <div
+          style={{
+            position: "absolute",
+            left: `calc(${(getX(activeIndexRetention) / width) * 100}% - 50px)`,
+            top: `calc(${(getY(data[activeIndexRetention].retention) / height) * 100}% - 57px)`,
+            background: "#1c1c1e",
+            padding: "7px 16px",
+            borderRadius: "12px",
+            fontSize: "12px",
+            color: "#fff",
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+            textAlign: "center",
+            minWidth: "100px"
+          }}
+        >
+          <div style={{ fontWeight: 600, textAlign: "center" }}>
+            {Math.round(data[activeIndexRetention].retention)}%
+          </div>
+          <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px", textAlign: "center" }}>
+            {data[activeIndexRetention].time}
+          </div>
+        </div>
+      )}
     </div>
   )
 }
