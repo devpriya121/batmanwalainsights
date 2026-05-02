@@ -1527,8 +1527,8 @@ const DraggableGraph = ({
         <div
           style={{
             position: "absolute",
-            left: `calc(${(getThisReelX(activeIndexViews) / width) * 100}% - 35px)`,
-            top: `calc(${(getY(visiblePinkData[activeIndexViews].thisReel) / height) * 100}% - 62px)`,
+                        left: `calc(${(getThisReelX(activeIndexViews) / width) * 100}% - 35px)`,
+            top: `calc(${(padding.top / height) * 100}% - 40px)`,
             background: "#1c1c1e",
             zIndex: 50,
             padding: "5px 10px",
@@ -1728,7 +1728,7 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
           style={{
             position: "absolute",
             left: `calc(${(getX(activeIndexEngagement) / width) * 100}% - 35px)`,
-            top: `calc(${(getY(data[activeIndexEngagement].value) / height) * 100}% - 57px)`,
+            top: `calc(${(padding.top / height) * 100}% - 40px)`,
             background: "#1c1c1e",
             zIndex: 50,
             padding: "5px 10px",
@@ -1828,8 +1828,8 @@ const DraggableRetentionGraph = ({ data, onChange, locked, videoDuration }: { da
         <div
           style={{
             position: "absolute",
-            left: `calc(${(getX(activeIndexRetention) / width) * 100}% - 35px)`,
-            top: `calc(${(getY(data[activeIndexRetention].retention) / height) * 100}% - 57px)`,
+             left: `calc(${(getX(activeIndexRetention) / width) * 100}% - 35px)`,
+            top: `calc(${(padding.top / height) * 100}% - 40px)`,
             background: "#1c1c1e",
             zIndex: 50,
             padding: "5px 10px",
