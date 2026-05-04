@@ -1339,7 +1339,9 @@ const DraggableGraph = ({
     const commitEdit = () => {
     if (editingX !== null) {
       const updated = [...xLabels]
-      updated[editingX] = editValue
+      if (editValue.trim()) {
+        updated[editingX] = editValue.trim()
+      }
       setXLabels(updated)
       try { localStorage.setItem("graph-x-labels", JSON.stringify(updated)) } catch {}
       setEditingX(null)
