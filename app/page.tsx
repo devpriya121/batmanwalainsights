@@ -1906,7 +1906,11 @@ export default function ReelInsights() {
   })
   const [showGetEditsBanner, setShowGetEditsBanner] = useState(true)
    const [showWhoViewedSheet, setShowWhoViewedSheet] = useState(false)
-  const [celebrationViews, setCelebrationViews] = useState("3K")
+    const [celebrationViews, setCelebrationViews] = useState("3K")
+  const [celebrationIcon, setCelebrationIcon] = useState<string | null>(() => {
+    try { return localStorage.getItem("celebration-icon") } catch { return null }
+  })
+  const celebrationIconInputRef = useRef<HTMLInputElement>(null)
   const [showCelebrationBox, setShowCelebrationBox] = useState(true)
   const [editingCelebration, setEditingCelebration] = useState(false)
   const [celebrationEditValue, setCelebrationEditValue] = useState("3K")
@@ -2621,17 +2625,54 @@ export default function ReelInsights() {
         gap: "12px"
       }}
     >
-            {/* Rocket icon */}
+                  {/* Uploadable icon */}
       <div
-        className="shrink-0 flex items-center justify-center"
+        className="shrink-0 flex items-center justify-center cursor-pointer"
         style={{ width: 44, height: 44 }}
+        onClick={(e) => { e.stopPropagation(); if (!locked) celebrationIconInputRef.current?.click() }}
       >
-        <img
-          src="/public/rocket.webp"
-          alt="Rocket"
-          className="h-[26px] w-auto object-contain"
-        />
+        {celebrationIcon ? (
+          <img
+            src={celebrationIcon}
+            alt="Icon"
+            className="h-[26px] w-auto object-contain"
+          />
+        ) : (
+          <div
+            style={{
+              width: "42px",
+              height: "42px",
+              borderRadius: "50%",
+              background: "#1c1c1e",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+          </div>
+        )}
       </div>
+      <input
+        ref={celebrationIconInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0]
+          if (!file) return
+          const reader = new FileReader()
+          reader.onload = (ev) => {
+            const result = ev.target?.result as string
+            setCelebrationIcon(result)
+            try { localStorage.setItem("celebration-icon", result) } catch {}
+          }
+          reader.readAsDataURL(file)
+        }}
+      />
 
       {/* Text */}
       <div style={{ flex: 1, paddingRight: "20px" }}>
