@@ -2625,10 +2625,10 @@ export default function ReelInsights() {
         gap: "12px"
       }}
     >
-                  {/* Uploadable icon */}
+     {/* Uploadable icon */}
       <div
         className="shrink-0 flex items-center justify-center cursor-pointer"
-        style={{ width: 44, height: 44 }}
+        style={{ width: 44, height: 44, marginTop: 6 }}
         onClick={(e) => { e.stopPropagation(); if (!locked) celebrationIconInputRef.current?.click() }}
       >
         {celebrationIcon ? (
@@ -2716,10 +2716,8 @@ export default function ReelInsights() {
                   setEditingCelebration(true)
                 }
               }}
-              style={{
-                cursor: locked ? "default" : "pointer",
-                borderBottom: locked ? "none" : "1px dashed rgba(255,255,255,0.4)",
-                paddingBottom: "1px"
+               style={{
+                cursor: locked ? "default" : "pointer"
               }}
             >
               {celebrationViews}
