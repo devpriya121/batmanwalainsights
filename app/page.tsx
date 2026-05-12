@@ -477,7 +477,9 @@ const BottomSheet = ({
     sourcesMode,
    onToggleSources,
   activeBannerType,
-  onToggleBanner,
+  onToggleBanner: () => void
+  hideViewsNumber: boolean
+  onToggleViewsNumber: () => void
 }: {
   open: boolean
   onClose: () => void
@@ -491,6 +493,8 @@ const BottomSheet = ({
   onToggleSources: () => void
   activeBannerType: "meta" | "edits" | "celebration"
   onToggleBanner: () => void
+  hideViewsNumber: boolean
+  onToggleViewsNumber: () => void
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null)
   const [showGreyEditor, setShowGreyEditor] = useState(false)
@@ -550,8 +554,18 @@ const BottomSheet = ({
                   <PinkLineEditor data={graphData} onChange={onUpdateGraph} yAxisTop={yAxisTop} />
                 </div>
               )}
+                            <div className="h-px bg-zinc-800" />
+              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleViewsNumber(); onClose() }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </div>
+                  <span className="text-[13px] text-white">{hideViewsNumber ? "Show views number" : "Hide views number"}</span>
+                </div>
+                <ChevronRightIcon />
+              </button>
               <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => setShowGreyEditor(p => !p)}>
+              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleLock(); onClose() }}>
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
                     <div className="w-3 h-3 rounded-full bg-[#8a8a8a]" />
@@ -1906,6 +1920,7 @@ export default function ReelInsights() {
   })
   const [showGetEditsBanner, setShowGetEditsBanner] = useState(true)
    const [showWhoViewedSheet, setShowWhoViewedSheet] = useState(false)
+  const [hideViewsNumber, setHideViewsNumber] = useState(false)
     const [celebrationViews, setCelebrationViews] = useState("3K")
   const [celebrationIcon, setCelebrationIcon] = useState<string | null>(() => {
     try { return localStorage.getItem("celebration-icon") } catch { return null }
@@ -2867,8 +2882,8 @@ export default function ReelInsights() {
 
                   <section className="px-4 py-5">
                                         <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-[15px] font-semibold">Views</h3>
+                                            <div className="flex items-center gap-2">
+                        <h3 className="text-[15px] font-semibold">Views over time</h3>
                         <button
                           className="focus:outline-none active:opacity-60 transition-opacity"
                           onClick={refreshViewsGraph}
@@ -2876,7 +2891,9 @@ export default function ReelInsights() {
                           <InfoIcon />
                         </button>
                       </div>
-                      <AnimatedNumber value={insightsData.views} className="text-[15px] font-semibold" triggerKey={viewsAnimKey} />
+                      {!hideViewsNumber && (
+                        <AnimatedNumber value={insightsData.views} className="text-[15px] font-semibold" triggerKey={viewsAnimKey} />
+                      )}
                     </div>
 
                     <div className="flex gap-2 mb-4">
@@ -3189,7 +3206,7 @@ export default function ReelInsights() {
   </>
 )}
           <InsightEditorModal open={editorOpen} onOpenChange={setEditorOpen} data={insightsData} onSave={handleEditorSave} />
-                        <BottomSheet 
+                                                <BottomSheet 
             open={bottomSheetOpen} 
             onClose={() => setBottomSheetOpen(false)} 
             onOpenEditor={() => setEditorOpen(true)} 
@@ -3200,6 +3217,8 @@ export default function ReelInsights() {
             yAxisTop={getViewsAxisTop(insightsData.views)}
                         sourcesMode={sourcesMode}
             activeBannerType={activeBannerType}
+            hideViewsNumber={hideViewsNumber}
+            onToggleViewsNumber={() => setHideViewsNumber(p => !p)}
                         onToggleBanner={() => {
               const next = activeBannerType === "meta" ? "edits" : activeBannerType === "edits" ? "celebration" : "meta"
               setActiveBannerType(next)
