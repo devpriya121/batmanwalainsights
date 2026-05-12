@@ -2628,7 +2628,7 @@ export default function ReelInsights() {
                   {/* Uploadable icon */}
       <div
         className="shrink-0 flex items-center justify-center cursor-pointer"
-        style={{ width: 44, height: 44 }}
+        style={{ width: 74, height: 74 }}
         onClick={(e) => { e.stopPropagation(); if (!locked) celebrationIconInputRef.current?.click() }}
       >
         {celebrationIcon ? (
