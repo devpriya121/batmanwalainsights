@@ -2621,21 +2621,16 @@ export default function ReelInsights() {
         gap: "12px"
       }}
     >
-      {/* Rocket icon */}
+            {/* Rocket icon */}
       <div
-        style={{
-          width: "42px",
-          height: "42px",
-          borderRadius: "50%",
-          background: "#1c1c1e",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          flexShrink: 0,
-          fontSize: "20px"
-        }}
+        className="shrink-0 flex items-center justify-center"
+        style={{ width: 44, height: 44 }}
       >
-        🚀
+        <img
+          src="/public/rocket.webp"
+          alt="Rocket"
+          className="h-[26px] w-auto object-contain"
+        />
       </div>
 
       {/* Text */}
