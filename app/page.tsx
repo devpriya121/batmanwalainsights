@@ -475,9 +475,9 @@ const BottomSheet = ({
   onUpdateGraph,
   yAxisTop,
     sourcesMode,
-  onToggleSources,
-    activeBannerType: "meta" | "edits" | "celebration"
-  onToggleBanner: () => void
+   onToggleSources,
+  activeBannerType,
+  onToggleBanner,
 }: {
   open: boolean
   onClose: () => void
