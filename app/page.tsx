@@ -2676,7 +2676,7 @@ export default function ReelInsights() {
 
       {/* Text */}
       <div style={{ flex: 1, paddingRight: "20px" }}>
-        <div style={{ color: "#fff", fontSize: "14px", fontWeight: 700, lineHeight: 1.3 }}>
+        <div style={{ color: "#fff", fontSize: "12px", fontWeight: 700, lineHeight: 1.3 }}>
           {"Your reel got over "}
           {editingCelebration ? (
             <input
@@ -2728,11 +2728,11 @@ export default function ReelInsights() {
           {" views!"}
         </div>
 
-        <div style={{ marginTop: "5px", color: "#d1d1d6", fontSize: "12px", lineHeight: 1.35 }}>
+        <div style={{ marginTop: "5px", color: "#d1d1d6", fontSize: "11px", lineHeight: 1.35 }}>
           Take a moment to celebrate how you made it happen.
         </div>
 
-        <div style={{ marginTop: "8px", color: "#5b8cff", fontSize: "13px", fontWeight: 600 }}>
+        <div style={{ marginTop: "8px", color: "#8c9edd", fontSize: "11px", fontWeight: 600 }}>
           See more
         </div>
       </div>
