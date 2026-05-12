@@ -476,10 +476,10 @@ const BottomSheet = ({
   yAxisTop,
     sourcesMode,
    onToggleSources,
-  activeBannerType,
-  onToggleBanner: () => void
-  hideViewsNumber: boolean
-  onToggleViewsNumber: () => void
+    activeBannerType,
+  onToggleBanner,
+  hideViewsNumber,
+  onToggleViewsNumber,
 }: {
   open: boolean
   onClose: () => void
