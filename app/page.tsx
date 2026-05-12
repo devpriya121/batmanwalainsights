@@ -476,8 +476,8 @@ const BottomSheet = ({
   yAxisTop,
     sourcesMode,
   onToggleSources,
-  activeBannerType,
-  onToggleBanner,
+    activeBannerType: "meta" | "edits" | "celebration"
+  onToggleBanner: () => void
 }: {
   open: boolean
   onClose: () => void
@@ -489,7 +489,7 @@ const BottomSheet = ({
   yAxisTop: number
     sourcesMode: "all" | "three"
   onToggleSources: () => void
-  activeBannerType: "meta" | "edits"
+  activeBannerType: "meta" | "edits" | "celebration"
   onToggleBanner: () => void
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null)
@@ -597,8 +597,8 @@ const BottomSheet = ({
                       <rect x="3" y="3" width="18" height="18" rx="3"/>
                     </svg>
                   </div>
-                  <span className="text-[13px] text-white">
-                    {activeBannerType === "meta" ? "Switch to Get Edits banner" : "Switch to Meta Verified banner"}
+                                    <span className="text-[13px] text-white">
+                    {activeBannerType === "meta" ? "Switch to Get Edits banner" : activeBannerType === "edits" ? "Switch to Celebration banner" : "Switch to Meta Verified banner"}
                   </span>
                 </div>
                 <ChevronRightIcon />
@@ -1897,15 +1897,20 @@ export default function ReelInsights() {
     const [viewsAnimKey, setViewsAnimKey] = useState(0)
       const [showMetaVerifiedBanner, setShowMetaVerifiedBanner] = useState(true)
   const [animateBanner, setAnimateBanner] = useState(true)
-  const [activeBannerType, setActiveBannerType] = useState<"meta" | "edits">(() => {
+    const [activeBannerType, setActiveBannerType] = useState<"meta" | "edits" | "celebration">(() => {
     try {
       const saved = localStorage.getItem("active-banner-type")
-      if (saved === "edits") return "edits"
+      if (saved === "edits" || saved === "celebration") return saved as "meta" | "edits" | "celebration"
     } catch {}
     return "meta"
   })
   const [showGetEditsBanner, setShowGetEditsBanner] = useState(true)
- const [showWhoViewedSheet, setShowWhoViewedSheet] = useState(false)
+   const [showWhoViewedSheet, setShowWhoViewedSheet] = useState(false)
+  const [celebrationViews, setCelebrationViews] = useState("3K")
+  const [showCelebrationBox, setShowCelebrationBox] = useState(true)
+  const [editingCelebration, setEditingCelebration] = useState(false)
+  const [celebrationEditValue, setCelebrationEditValue] = useState("3K")
+  const celebrationInputRef = useRef<HTMLInputElement>(null)
     const overviewRef = useRef<HTMLDivElement>(null)
    const permanentGreyLine = useRef<number[]>([])
 
@@ -2259,6 +2264,13 @@ export default function ReelInsights() {
 
 
 
+   useEffect(() => {
+    if (editingCelebration && celebrationInputRef.current) {
+      celebrationInputRef.current.focus()
+      celebrationInputRef.current.select()
+    }
+  }, [editingCelebration])
+
   useEffect(() => {
     setSummaryLoading(true)
     const t1 = setTimeout(() => setSummaryLoading(false), 900)
@@ -2591,6 +2603,121 @@ export default function ReelInsights() {
           </div>
         </div>
       </div>
+    </div>
+  )}
+
+    {/* ===== CELEBRATION BANNER ===== */}
+  {activeBannerType === "celebration" && showCelebrationBox && (
+    <div
+      style={{
+        marginBottom: 14,
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "18px",
+        padding: "16px 14px",
+        background: "transparent",
+        position: "relative",
+        display: "flex",
+        alignItems: "flex-start",
+        gap: "12px"
+      }}
+    >
+      {/* Rocket icon */}
+      <div
+        style={{
+          width: "42px",
+          height: "42px",
+          borderRadius: "50%",
+          background: "#1c1c1e",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          flexShrink: 0,
+          fontSize: "20px"
+        }}
+      >
+        🚀
+      </div>
+
+      {/* Text */}
+      <div style={{ flex: 1, paddingRight: "20px" }}>
+        <div style={{ color: "#fff", fontSize: "14px", fontWeight: 700, lineHeight: 1.3 }}>
+          {"Your reel got over "}
+          {editingCelebration ? (
+            <input
+              ref={celebrationInputRef}
+              value={celebrationEditValue}
+              onChange={e => setCelebrationEditValue(e.target.value)}
+              onBlur={() => {
+                if (celebrationEditValue.trim()) setCelebrationViews(celebrationEditValue.trim())
+                setEditingCelebration(false)
+              }}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  if (celebrationEditValue.trim()) setCelebrationViews(celebrationEditValue.trim())
+                  setEditingCelebration(false)
+                }
+              }}
+              style={{
+                background: "#2a2d33",
+                border: `1px solid ${PINK}`,
+                borderRadius: "8px",
+                padding: "1px 6px",
+                color: "#fff",
+                fontSize: "14px",
+                fontWeight: 700,
+                width: "52px",
+                outline: "none",
+                caretColor: PINK,
+                textAlign: "center",
+                display: "inline-block"
+              }}
+            />
+          ) : (
+            <span
+              onClick={() => {
+                if (!locked) {
+                  setCelebrationEditValue(celebrationViews)
+                  setEditingCelebration(true)
+                }
+              }}
+              style={{
+                cursor: locked ? "default" : "pointer",
+                borderBottom: locked ? "none" : "1px dashed rgba(255,255,255,0.4)",
+                paddingBottom: "1px"
+              }}
+            >
+              {celebrationViews}
+            </span>
+          )}
+          {" views!"}
+        </div>
+
+        <div style={{ marginTop: "5px", color: "#d1d1d6", fontSize: "12px", lineHeight: 1.35 }}>
+          Take a moment to celebrate how you made it happen.
+        </div>
+
+        <div style={{ marginTop: "8px", color: "#5b8cff", fontSize: "13px", fontWeight: 600 }}>
+          See more
+        </div>
+      </div>
+
+      {/* Close button */}
+      <button
+        onClick={() => setShowCelebrationBox(false)}
+        style={{
+          position: "absolute",
+          top: "12px",
+          right: "12px",
+          background: "transparent",
+          border: "none",
+          color: "#9a9aa0",
+          cursor: "pointer",
+          padding: "0",
+          lineHeight: 1
+        }}
+      >
+        <CloseIcon />
+      </button>
     </div>
   )}
 
@@ -3039,11 +3166,12 @@ export default function ReelInsights() {
             yAxisTop={getViewsAxisTop(insightsData.views)}
                         sourcesMode={sourcesMode}
             activeBannerType={activeBannerType}
-            onToggleBanner={() => {
-              const next = activeBannerType === "meta" ? "edits" : "meta"
+                        onToggleBanner={() => {
+              const next = activeBannerType === "meta" ? "edits" : activeBannerType === "edits" ? "celebration" : "meta"
               setActiveBannerType(next)
               setShowGetEditsBanner(true)
               setShowMetaVerifiedBanner(true)
+              setShowCelebrationBox(true)
               try { localStorage.setItem("active-banner-type", next) } catch {}
             }}
             onToggleSources={() => {
