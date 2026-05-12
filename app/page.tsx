@@ -2,7 +2,7 @@
  
 import React from "react" 
 import { useState, useRef, useEffect } from "react"
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
+import { motion, AnimatePresence, LayoutGroup } from "framer-motion"FUploa
 import { InsightEditorModal } from "@/components/InsightEditorModal"
 import { useInsightsStorage } from "@/hooks/useInsightsStorage" 
 import { InsightsData } from "@/lib/insights-state"
@@ -2628,7 +2628,7 @@ export default function ReelInsights() {
      {/* Uploadable icon */}
       <div
         className="shrink-0 flex items-center justify-center cursor-pointer"
-        style={{ width: 44, height: 44, marginTop: 6 }}
+        style={{ width: 44, height: 44, marginTop: 7 }}
         onClick={(e) => { e.stopPropagation(); if (!locked) celebrationIconInputRef.current?.click() }}
       >
         {celebrationIcon ? (
@@ -2676,7 +2676,7 @@ export default function ReelInsights() {
 
       {/* Text */}
       <div style={{ flex: 1, paddingRight: "20px" }}>
-        <div style={{ color: "#fff", fontSize: "12px", fontWeight: 700, lineHeight: 1.3 }}>
+        <div style={{ color: "#fff", fontSize: "12px", fontWeight: 700, lineHeight: 1.0 }}>
           {"Your reel got over "}
           {editingCelebration ? (
             <input
@@ -2726,7 +2726,7 @@ export default function ReelInsights() {
           {" views!"}
         </div>
 
-        <div style={{ marginTop: "5px", color: "#d1d1d6", fontSize: "11px", lineHeight: 1.35 }}>
+        <div style={{ marginTop: "5px", color: "#d1d1d6", fontSize: "10px", lineHeight: 1.35 }}>
           Take a moment to celebrate how you made it happen.
         </div>
 
