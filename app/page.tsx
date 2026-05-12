@@ -1920,7 +1920,13 @@ export default function ReelInsights() {
   })
   const [showGetEditsBanner, setShowGetEditsBanner] = useState(true)
    const [showWhoViewedSheet, setShowWhoViewedSheet] = useState(false)
-  const [hideViewsNumber, setHideViewsNumber] = useState(false)
+  const [hideViewsNumber, setHideViewsNumber] = useState(() => {
+    try {
+      const saved = localStorage.getItem("hide-views-number")
+      if (saved) return JSON.parse(saved)
+    } catch {}
+    return false
+  })
     const [celebrationViews, setCelebrationViews] = useState("3K")
   const [celebrationIcon, setCelebrationIcon] = useState<string | null>(() => {
     try { return localStorage.getItem("celebration-icon") } catch { return null }
@@ -3218,7 +3224,7 @@ export default function ReelInsights() {
                         sourcesMode={sourcesMode}
             activeBannerType={activeBannerType}
             hideViewsNumber={hideViewsNumber}
-            onToggleViewsNumber={() => setHideViewsNumber(p => !p)}
+            onToggleViewsNumber={() => setHideViewsNumber((p: boolean) => { const next = !p; try { localStorage.setItem("hide-views-number", JSON.stringify(next)) } catch {}; return next })}
                         onToggleBanner={() => {
               const next = activeBannerType === "meta" ? "edits" : activeBannerType === "edits" ? "celebration" : "meta"
               setActiveBannerType(next)
