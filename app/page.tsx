@@ -2580,19 +2580,31 @@ export default function ReelInsights() {
 
                         <div className="px-4 pt-4">
 
-  {/* ===== GET EDITS BANNER ===== */}
+    {/* ===== GET EDITS BANNER ===== */}
   {activeBannerType === "edits" && (
     <div
       style={{
-        opacity: showGetEditsBanner ? 1 : 0,
         height: showGetEditsBanner ? "auto" : "0px",
         overflow: "hidden",
-        transition: "opacity 0.2s ease, height 0.25s ease",
-        marginBottom: showGetEditsBanner ? 14 : 0,
+        transition: "all 0.25s ease",
       }}
     >
       <div
-        className="relative flex items-center gap-3 rounded-2xl pl-2 pr-4 py-4"
+        style={{
+          opacity: showGetEditsBanner ? 1 : 0,
+          transform: showGetEditsBanner ? "scale(1)" : "scale(0.98)",
+          transition: "all 0.25s ease",
+        }}
+      >
+        <div
+          style={{
+            transform: animateBanner ? "translateY(0px)" : "translateY(20px)",
+            opacity: animateBanner ? 1 : 0,
+            transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+      <div
+        className="relative flex items-center gap-3 rounded-2xl pl-2 pr-4 py-4 mb-[14px]"
         style={{ border: "1px solid rgba(255,255,255,0.08)" }}
       >
         {/* Close button */}
@@ -2628,13 +2640,35 @@ export default function ReelInsights() {
           </div>
         </div>
       </div>
+      </div>
+      </div>
     </div>
   )}
 
     {/* ===== CELEBRATION BANNER ===== */}
   {activeBannerType === "celebration" && showCelebrationBox && (
     <div
-            style={{
+      style={{
+        overflow: "hidden",
+        transition: "all 0.25s ease",
+      }}
+    >
+      <div
+        style={{
+          opacity: 1,
+          transform: "scale(1)",
+          transition: "all 0.25s ease",
+        }}
+      >
+        <div
+          style={{
+            transform: animateBanner ? "translateY(0px)" : "translateY(20px)",
+            opacity: animateBanner ? 1 : 0,
+            transition: "all 0.35s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+    <div
+      style={{
         marginBottom: 14,
         border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: "18px",
@@ -2772,7 +2806,10 @@ export default function ReelInsights() {
         }}
       >
         <CloseIcon />
-      </button>
+            </button>
+    </div>
+    </div>
+    </div>
     </div>
   )}
 
