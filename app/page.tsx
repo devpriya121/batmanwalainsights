@@ -4,7 +4,7 @@ import React from "react"
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
 import { InsightEditorModal } from "@/components/InsightEditorModal"
-import { useInsightsStorage } from "@/hooks/useInsightsStorage"
+import { useInsightsStorage } from "@/hooks/useInsightsStorage" 
 import { InsightsData } from "@/lib/insights-state"
 
 const shimmerStyle = {
