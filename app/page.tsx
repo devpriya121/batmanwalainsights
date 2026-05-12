@@ -2613,16 +2613,16 @@ export default function ReelInsights() {
     {/* ===== CELEBRATION BANNER ===== */}
   {activeBannerType === "celebration" && showCelebrationBox && (
     <div
-      style={{
+            style={{
         marginBottom: 14,
         border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: "18px",
-        padding: "16px 14px",
+        padding: "14px 12px",
         background: "transparent",
         position: "relative",
         display: "flex",
         alignItems: "flex-start",
-        gap: "12px"
+        gap: "10px"
       }}
     >
      {/* Uploadable icon */}
