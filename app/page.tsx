@@ -2562,7 +2562,7 @@ export default function ReelInsights() {
           <motion.div
             layoutId="activeTabUnderline"
             initial={false}
-            className="absolute bottom-0 left-1 right-1 h-[2px] bg-white rounded-full"
+            className="absolute bottom-0 left-1/2 right-1/2 h-[2px] bg-white rounded-full"
             transition={{ type: "spring", stiffness: 500, damping: 40 }}
           />
         )}
