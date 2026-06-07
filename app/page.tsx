@@ -4,6 +4,8 @@ import React from "react"
 import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence, LayoutGroup } from "framer-motion"
 import { InsightEditorModal } from "@/components/InsightEditorModal"
+import BottomNav from "@/components/BottomNav"
+import Link from "next/link"
 import { useInsightsStorage } from "@/hooks/useInsightsStorage" 
 import { InsightsData } from "@/lib/insights-state"
 
@@ -1907,6 +1909,7 @@ export default function ReelInsights() {
   const retentionInputRef = useRef<HTMLInputElement>(null)
   const sharedThumbInputRef = useRef<HTMLInputElement>(null)
   const [mainTab, setMainTab] = useState<"Overview" | "Engagement" | "Audience">("Overview")
+const [activeNav, setActiveNav] = useState<"home" | "search" | "reels" | "profile">("home")
     const [animationKey, setAnimationKey] = useState(0)
     const [viewsAnimKey, setViewsAnimKey] = useState(0)
       const [showMetaVerifiedBanner, setShowMetaVerifiedBanner] = useState(true)
@@ -2439,6 +2442,19 @@ export default function ReelInsights() {
                     {/* Header Spacer */}
           <div className="h-[48px]" />
 
+          {/* Back to Profile Button */}
+          <div className="px-4 py-2">
+            <Link 
+              href="/profile"
+              className="inline-flex items-center gap-2 text-[13px] text-zinc-400 hover:text-white transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="m15 18-6-6 6-6"/>
+              </svg>
+              Back to Profile
+            </Link>
+          </div>
+
           {/* Thumbnail */}
           <section className="flex flex-col items-center pt-4 pb-4 px-5">
 
@@ -2562,7 +2578,7 @@ export default function ReelInsights() {
           <motion.div
             layoutId="activeTabUnderline"
             initial={false}
-            className="absolute bottom-0 left-4 right-4 h-[2px] bg-white rounded-full"
+            className="absolute bottom-0 left-2 right-2 h-[2px] bg-white rounded-full"
             transition={{ type: "spring", stiffness: 500, damping: 40 }}
           />
         )}
@@ -3343,6 +3359,9 @@ export default function ReelInsights() {
           />
         </div>
       </div>
+
+      {/* Bottom Navigation */}
+      <BottomNav activeTab={activeNav} onTabChange={setActiveNav} />
     </>
   )
 }
