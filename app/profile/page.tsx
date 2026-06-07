@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import BottomNav from "@/components/BottomNav"
-import ReelInsights from "../page"
+import ReelInsights from "../page" 
 
 const PINK = "#d939cf"
 const PURPLE = "#7738fb"
