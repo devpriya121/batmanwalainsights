@@ -2562,7 +2562,7 @@ export default function ReelInsights() {
           <motion.div
             layoutId="activeTabUnderline"
             initial={false}
-            className="absolute bottom-0 left-1/4 right-1/4 h-[2px] bg-white rounded-full"
+            className="absolute bottom-0 left-4 right-4 h-[2px] bg-white rounded-full"
             transition={{ type: "spring", stiffness: 500, damping: 40 }}
           />
         )}
@@ -3054,10 +3054,6 @@ export default function ReelInsights() {
               {/* ===== ENGAGEMENT ===== */}
               {mainTab === "Engagement" && (
                 <motion.div key="engagement" variants={tabContent} initial="initial" animate="animate" exit="exit">
-                  <section className="px-4 py-5">
-                                       <div className="flex items-center gap-2 mb-8"><h3 className="text-[15px] font-semibold">When people liked your reel</h3><InfoIcon /></div>
-                    {engagementData.length > 0 && <DraggableEngagementGraph data={engagementData} onChange={handleEngagementChange} locked={locked} videoDuration={insightsData.videoDuration} />}
-                  </section>
 
                   <section className="px-4 py-5">
                     <div className="flex items-center gap-2 mb-4"><h3 className="text-[15px] font-semibold">Actions after viewing</h3><InfoIcon /></div>
@@ -3085,10 +3081,46 @@ export default function ReelInsights() {
                       ))}
                     </div>
                   </section>
+
+                  <section className="px-4 py-5">
+                    <div className="flex items-center gap-2 mb-4">
+                      <h3 className="text-[15px] font-semibold">When people liked your reel</h3>
+                      <InfoIcon />
+                    </div>
+                    <div className="flex justify-center mb-5">
+                      <div className="relative w-[100px] h-[170px] bg-zinc-900 rounded-xl overflow-hidden cursor-pointer group shadow-xl" onClick={() => { if (!locked) sharedThumbInputRef.current?.click() }}>
+                        {(thumbnailUrl || thumbnailImage) ? (
+                          <>
+                            <img src={thumbnailUrl || thumbnailImage || ""} alt="Engagement" className="w-full h-full object-cover" />
+                            {!locked && (
+                              <button
+                                className="absolute top-1.5 right-1.5 p-1 bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={e => {
+                                  e.stopPropagation()
+                                  setThumbnailUrl("")
+                                  setThumbnailImage(null)
+                                  try { localStorage.removeItem("shared-thumbnail") } catch {}
+                                }}
+                              >
+                                <CloseIcon />
+                              </button>
+                            )}
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center h-full text-zinc-500">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <span className="text-[9px] mt-1.5">Upload</span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg></div>
+                      </div>
+                    </div>
+                    {engagementData.length > 0 && <DraggableEngagementGraph data={engagementData} onChange={handleEngagementChange} locked={locked} videoDuration={insightsData.videoDuration} />}
+                  </section>
                 </motion.div>
               )}
 
-              {/* ===== AUDIENCE ===== */}
+{/* ===== AUDIENCE ===== */}
               {mainTab === "Audience" && (
                 <motion.div key="audience" variants={tabContent} initial="initial" animate="animate" exit="exit">
                   <section className="px-4 pt-5 pb-3">
