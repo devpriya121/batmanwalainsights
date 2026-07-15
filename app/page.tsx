@@ -480,6 +480,8 @@ const BottomSheet = ({
   onToggleBanner,
   hideViewsNumber,
   onToggleViewsNumber,
+  drawMode,
+  onToggleDrawMode,
 }: {
   open: boolean
   onClose: () => void
@@ -495,6 +497,8 @@ const BottomSheet = ({
   onToggleBanner: () => void
   hideViewsNumber: boolean
   onToggleViewsNumber: () => void
+  drawMode: "thisReel" | "typical" | null
+  onToggleDrawMode: (mode: "thisReel" | "typical") => void
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null)
   const [showGreyEditor, setShowGreyEditor] = useState(false)
@@ -554,6 +558,16 @@ const BottomSheet = ({
                   <PinkLineEditor data={graphData} onChange={onUpdateGraph} yAxisTop={yAxisTop} />
                 </div>
               )}
+              <div className="h-px bg-zinc-800" />
+              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleDrawMode("thisReel"); onClose() }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={drawMode === "thisReel" ? PINK : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                  </div>
+                  <span className="text-[13px] text-white">{drawMode === "thisReel" ? "Stop drawing pink line" : "Draw pink line"}</span>
+                </div>
+                <ChevronRightIcon />
+              </button>
                             <div className="h-px bg-zinc-800" />
               <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleViewsNumber(); onClose() }}>
                 <div className="flex items-center gap-3">
@@ -581,6 +595,16 @@ const BottomSheet = ({
                   }} />
                 </div>
               )}
+              <div className="h-px bg-zinc-800" />
+              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleDrawMode("typical"); onClose() }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={drawMode === "typical" ? "#8a8a8a" : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                  </div>
+                  <span className="text-[13px] text-white">{drawMode === "typical" ? "Stop drawing grey line" : "Draw grey line"}</span>
+                </div>
+                <ChevronRightIcon />
+              </button>
               <div className="h-px bg-zinc-800" />
               <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onClose(); onOpenEditor() }}>
                 <div className="flex items-center gap-3">
@@ -1259,15 +1283,20 @@ const DraggableGraph = ({
   locked,
   yAxisTop,
   greyLineLocked,
+  drawMode,
+  onDrawModeChange,
 }: {
   data: GraphPoint[]
   onChange: (d: GraphPoint[]) => void
   locked: boolean
   yAxisTop: number
   greyLineLocked: boolean
+  drawMode?: "thisReel" | "typical" | null
+  onDrawModeChange?: (mode: "thisReel" | "typical" | null) => void
 }) => {
   const svgRef = useRef<SVGSVGElement>(null)
   const [dragging, setDragging] = useState<{ index: number; line: "thisReel" | "typical" } | null>(null)
+  const [drawPoints, setDrawPoints] = useState<{ x: number; y: number }[]>([])
  const [activeIndexViews, setActiveIndexViews] = useState<number | null>(null)
     const [xLabels, setXLabels] = useState<string[]>(() => {
     try {
@@ -1326,6 +1355,57 @@ const DraggableGraph = ({
     return d
   }
 
+  const getSvgPoint = (clientX: number, clientY: number) => {
+    const svg = svgRef.current
+    if (!svg) return null
+    const rect = svg.getBoundingClientRect()
+    return {
+      x: ((clientX - rect.left) / rect.width) * width,
+      y: ((clientY - rect.top) / rect.height) * height,
+    }
+  }
+
+  const valueFromSvgY = (svgY: number) => {
+    return Math.max(0, Math.min(yAxisTop, Math.round(((padding.top + chartH - svgY) / chartH) * yAxisTop)))
+  }
+
+  const interpolateY = (targetX: number, points: { x: number; y: number }[]) => {
+    if (points.length === 0) return null
+    const sorted = [...points].sort((a, b) => a.x - b.x)
+    if (targetX <= sorted[0].x) return sorted[0].y
+    if (targetX >= sorted[sorted.length - 1].x) return sorted[sorted.length - 1].y
+    for (let i = 0; i < sorted.length - 1; i++) {
+      const p1 = sorted[i]
+      const p2 = sorted[i + 1]
+      if (targetX >= p1.x && targetX <= p2.x) {
+        const t = (targetX - p1.x) / (p2.x - p1.x)
+        return p1.y + t * (p2.y - p1.y)
+      }
+    }
+    return null
+  }
+
+  const applyDrawnLine = () => {
+    if (!drawMode || drawPoints.length < 2) {
+      setDrawPoints([])
+      return
+    }
+    const isPink = drawMode === "thisReel"
+    const count = isPink ? visiblePinkData.length : data.length
+    const getLineX = isPink ? getThisReelX : getX
+    const next = [...data]
+    for (let i = 0; i < count; i++) {
+      const targetX = getLineX(i)
+      const y = interpolateY(targetX, drawPoints)
+      if (y !== null) {
+        next[i] = { ...next[i], [drawMode]: valueFromSvgY(y) }
+      }
+    }
+    onChange(next)
+    setDrawPoints([])
+    onDrawModeChange?.(null)
+  }
+
     const cutoff = Math.ceil(data.length * 0.75)
   const visiblePinkData = data.slice(0, cutoff)
   const allThisReel = visiblePinkData.map((d, i) => ({
@@ -1333,6 +1413,7 @@ const DraggableGraph = ({
     y: getY(d.thisReel),
   }))
     const handlePointerDown = (index: number, line: "thisReel" | "typical", e: React.PointerEvent) => {
+    if (drawMode) return
     if (locked) return
     if (line === "typical" && greyLineLocked) return
     e.preventDefault()
@@ -1413,12 +1494,43 @@ const DraggableGraph = ({
       <svg
   ref={svgRef}
   viewBox={`0 0 ${width} ${height}`}
-  className={`w-full select-none ${locked ? "" : "touch-none"}`}
-  onPointerMove={handlePointerMove}
-  onPointerUp={handlePointerUp}
-  onPointerLeave={handlePointerUp}
+  className={`w-full select-none ${locked || drawMode ? "" : "touch-none"}`}
+  style={{ cursor: drawMode ? "crosshair" : undefined }}
+  onPointerDown={(e) => {
+    if (!drawMode || locked) return
+    if (drawMode === "typical" && greyLineLocked) return
+    e.preventDefault()
+    const p = getSvgPoint(e.clientX, e.clientY)
+    if (p) setDrawPoints([p])
+  }}
+  onPointerMove={(e) => {
+    if (drawMode) {
+      if (locked) return
+      if (drawMode === "typical" && greyLineLocked) return
+      e.preventDefault()
+      const p = getSvgPoint(e.clientX, e.clientY)
+      if (p) setDrawPoints(prev => [...prev, p])
+      return
+    }
+    handlePointerMove(e)
+  }}
+  onPointerUp={() => {
+    if (drawMode) {
+      applyDrawnLine()
+      return
+    }
+    handlePointerUp()
+  }}
+  onPointerLeave={() => {
+    if (drawMode) {
+      applyDrawnLine()
+      return
+    }
+    handlePointerUp()
+  }}
 
   onMouseMove={(e) => {
+    if (drawMode) return
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left
     const pinkWidth = chartW * 0.75
@@ -1430,6 +1542,7 @@ const DraggableGraph = ({
   onMouseLeave={() => setActiveIndexViews(null)}
 
   onTouchMove={(e) => {
+    if (drawMode) return
     const rect = e.currentTarget.getBoundingClientRect()
     const touch = e.touches[0]
     const x = touch.clientX - rect.left
@@ -1534,9 +1647,23 @@ const DraggableGraph = ({
             fill="transparent"
             className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"}
             onPointerDown={e => handlePointerDown(i, "thisReel", e)}
+            pointerEvents={drawMode ? "none" : "all"}
             style={{ touchAction: "none" }}
           />
         ))}
+
+        {drawMode && drawPoints.length > 1 && (
+          <path
+            d={buildPath(drawPoints)}
+            fill="none"
+            stroke={drawMode === "thisReel" ? PINK : "#ffffff"}
+            strokeWidth={4}
+            strokeDasharray="4 4"
+            strokeLinecap="round"
+            opacity={0.85}
+            pointerEvents="none"
+          />
+        )}
       </svg>
 
                        {activeIndexViews !== null && (
@@ -1566,6 +1693,11 @@ const DraggableGraph = ({
         </div>
       )}
 
+      {drawMode && (
+        <div className="mt-3 pl-4 text-[10px] text-zinc-400">
+          {drawMode === "thisReel" ? "Draw the pink line on the chart" : "Draw the grey line on the chart"}
+        </div>
+      )}
       <div className="flex items-center gap-6 mt-3 pl-4">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ backgroundColor: PINK }} />
@@ -1938,6 +2070,7 @@ export default function ReelInsights() {
   const celebrationInputRef = useRef<HTMLInputElement>(null)
     const overviewRef = useRef<HTMLDivElement>(null)
    const permanentGreyLine = useRef<number[]>([])
+  const [graphDrawMode, setGraphDrawMode] = useState<"thisReel" | "typical" | null>(null)
 
   const buildEngagementData = (videoDuration: string): EngagementPoint[] => {
     const totalSec = (() => { const parts = videoDuration.split(":").map(Number); return parts.length === 2 ? parts[0] * 60 + parts[1] : 31 })()
@@ -2951,6 +3084,8 @@ export default function ReelInsights() {
                       locked={locked}
                       greyLineLocked={greyLineLocked}
                       yAxisTop={getViewsAxisTop(insightsData.views)}
+                      drawMode={graphDrawMode}
+                      onDrawModeChange={setGraphDrawMode}
                     />
                     </div>
 
@@ -3294,6 +3429,8 @@ export default function ReelInsights() {
             activeBannerType={activeBannerType}
             hideViewsNumber={hideViewsNumber}
             onToggleViewsNumber={() => setHideViewsNumber((p: boolean) => { const next = !p; try { localStorage.setItem("hide-views-number", JSON.stringify(next)) } catch {}; return next })}
+            drawMode={graphDrawMode}
+            onToggleDrawMode={(mode) => setGraphDrawMode(prev => prev === mode ? null : mode)}
                         onToggleBanner={() => {
               const next = activeBannerType === "meta" ? "edits" : activeBannerType === "edits" ? "celebration" : "meta"
               setActiveBannerType(next)
