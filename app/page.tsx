@@ -1297,6 +1297,7 @@ const DraggableGraph = ({
   const svgRef = useRef<SVGSVGElement>(null)
   const [dragging, setDragging] = useState<{ index: number; line: "thisReel" | "typical" } | null>(null)
   const [drawPoints, setDrawPoints] = useState<{ x: number; y: number }[]>([])
+  const isDrawingRef = useRef(false)
  const [activeIndexViews, setActiveIndexViews] = useState<number | null>(null)
     const [xLabels, setXLabels] = useState<string[]>(() => {
     try {
@@ -1328,6 +1329,13 @@ const DraggableGraph = ({
       yInputRef.current.select()
     }
   }, [editingY])
+
+  useEffect(() => {
+    if (!drawMode) {
+      isDrawingRef.current = false
+      setDrawPoints([])
+    }
+  }, [drawMode])
 
   const padding = { top: 15, right: 10, bottom: 38, left: 44 }
   const width = 380
@@ -1494,36 +1502,54 @@ const DraggableGraph = ({
       <svg
   ref={svgRef}
   viewBox={`0 0 ${width} ${height}`}
-  className={`w-full select-none ${locked || drawMode ? "" : "touch-none"}`}
+  className={`w-full select-none ${locked ? "" : "touch-none"}`}
   style={{ cursor: drawMode ? "crosshair" : undefined }}
   onPointerDown={(e) => {
     if (!drawMode || locked) return
     if (drawMode === "typical" && greyLineLocked) return
     e.preventDefault()
     const p = getSvgPoint(e.clientX, e.clientY)
-    if (p) setDrawPoints([p])
+    if (!p) return
+    isDrawingRef.current = true
+    setDrawPoints([p])
   }}
   onPointerMove={(e) => {
-    if (drawMode) {
+    if (drawMode && isDrawingRef.current) {
       if (locked) return
       if (drawMode === "typical" && greyLineLocked) return
       e.preventDefault()
       const p = getSvgPoint(e.clientX, e.clientY)
-      if (p) setDrawPoints(prev => [...prev, p])
+      if (!p) return
+      setDrawPoints(prev => {
+        const last = prev[prev.length - 1]
+        const dist = last ? Math.hypot(p.x - last.x, p.y - last.y) : Infinity
+        if (dist < 2) return prev
+        return [...prev, p]
+      })
       return
     }
     handlePointerMove(e)
   }}
   onPointerUp={() => {
-    if (drawMode) {
+    if (drawMode && isDrawingRef.current) {
+      isDrawingRef.current = false
       applyDrawnLine()
       return
     }
     handlePointerUp()
   }}
   onPointerLeave={() => {
-    if (drawMode) {
+    if (drawMode && isDrawingRef.current) {
+      isDrawingRef.current = false
       applyDrawnLine()
+      return
+    }
+    handlePointerUp()
+  }}
+  onPointerCancel={() => {
+    if (drawMode) {
+      isDrawingRef.current = false
+      setDrawPoints([])
       return
     }
     handlePointerUp()
