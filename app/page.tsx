@@ -1373,6 +1373,24 @@ const DraggableGraph = ({
     }
   }
 
+  const getDrawSvgPoint = (e: React.PointerEvent) => {
+    const svg = svgRef.current
+    if (!svg) return null
+    const rect = svg.getBoundingClientRect()
+    let clientX = e.clientX
+    let clientY = e.clientY
+    if (e.pointerType === "touch") {
+      clientY -= 60
+    }
+    const y = ((clientY - rect.top) / rect.height) * height
+    const minY = padding.top
+    const maxY = padding.top + chartH
+    return {
+      x: ((clientX - rect.left) / rect.width) * width,
+      y: Math.max(minY, Math.min(maxY, y)),
+    }
+  }
+
   const valueFromSvgY = (svgY: number) => {
     return Math.max(0, Math.min(yAxisTop, Math.round(((padding.top + chartH - svgY) / chartH) * yAxisTop)))
   }
@@ -1508,7 +1526,7 @@ const DraggableGraph = ({
     if (!drawMode || locked) return
     if (drawMode === "typical" && greyLineLocked) return
     e.preventDefault()
-    const p = getSvgPoint(e.clientX, e.clientY)
+    const p = getDrawSvgPoint(e)
     if (!p) return
     isDrawingRef.current = true
     setDrawPoints([p])
@@ -1518,7 +1536,7 @@ const DraggableGraph = ({
       if (locked) return
       if (drawMode === "typical" && greyLineLocked) return
       e.preventDefault()
-      const p = getSvgPoint(e.clientX, e.clientY)
+      const p = getDrawSvgPoint(e)
       if (!p) return
       setDrawPoints(prev => {
         const last = prev[prev.length - 1]
@@ -1683,10 +1701,22 @@ const DraggableGraph = ({
             d={buildPath(drawPoints)}
             fill="none"
             stroke={drawMode === "thisReel" ? PINK : "#ffffff"}
-            strokeWidth={4}
-            strokeDasharray="4 4"
+            strokeWidth={5}
             strokeLinecap="round"
-            opacity={0.85}
+            strokeLinejoin="round"
+            opacity={0.95}
+            pointerEvents="none"
+          />
+        )}
+
+        {drawMode && drawPoints.length > 0 && (
+          <circle
+            cx={drawPoints[drawPoints.length - 1].x}
+            cy={drawPoints[drawPoints.length - 1].y}
+            r={5}
+            fill={drawMode === "thisReel" ? PINK : "#ffffff"}
+            stroke="#0c0f14"
+            strokeWidth={2}
             pointerEvents="none"
           />
         )}
