@@ -482,6 +482,14 @@ const BottomSheet = ({
   onToggleViewsNumber,
   drawMode,
   onToggleDrawMode,
+  apifyToken,
+  onApifyTokenChange,
+  reelUrl,
+  onReelUrlChange,
+  onScrapeReel,
+  scraping,
+  scrapeError,
+  scrapeSuccess,
 }: {
   open: boolean
   onClose: () => void
@@ -499,10 +507,22 @@ const BottomSheet = ({
   onToggleViewsNumber: () => void
   drawMode: "thisReel" | "typical" | null
   onToggleDrawMode: (mode: "thisReel" | "typical") => void
+  apifyToken: string
+  onApifyTokenChange: (token: string) => void
+  reelUrl: string
+  onReelUrlChange: (url: string) => void
+  onScrapeReel: (url: string) => void
+  scraping: boolean
+  scrapeError: string | null
+  scrapeSuccess: boolean
 }) => {
   const sheetRef = useRef<HTMLDivElement>(null)
   const [showGreyEditor, setShowGreyEditor] = useState(false)
   const [showPinkEditor, setShowPinkEditor] = useState(false)
+  const [showTokenInput, setShowTokenInput] = useState(false)
+  const [showScrapeInput, setShowScrapeInput] = useState(false)
+  const [localToken, setLocalToken] = useState(apifyToken)
+  const [localUrl, setLocalUrl] = useState(reelUrl)
 
   useEffect(() => {
     if (!open) return
@@ -615,6 +635,63 @@ const BottomSheet = ({
                 </div>
                 <ChevronRightIcon />
               </button>
+              <div className="h-px bg-zinc-800" />
+              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { setShowTokenInput(p => !p); setShowScrapeInput(false) }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                  </div>
+                  <span className="text-[13px] text-white">{apifyToken ? "Change Apify token" : "Set Apify token"}</span>
+                </div>
+                <ChevronRightIcon />
+              </button>
+              {showTokenInput && (
+                <div className="py-2 space-y-2">
+                  <input
+                    type="text"
+                    value={localToken}
+                    onChange={e => setLocalToken(e.target.value)}
+                    placeholder="Paste Apify API token"
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-[13px] text-white outline-none focus:border-fuchsia-500 transition-colors"
+                  />
+                  <button
+                    onClick={() => { onApifyTokenChange(localToken); setShowTokenInput(false) }}
+                    className="w-full py-2 rounded-xl bg-fuchsia-600 text-white text-[12px] font-medium active:opacity-80 transition-opacity"
+                  >
+                    Save token
+                  </button>
+                </div>
+              )}
+              <div className="h-px bg-zinc-800" />
+              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { setShowScrapeInput(p => !p); setShowTokenInput(false) }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  </div>
+                  <span className="text-[13px] text-white">Scrape reel from URL</span>
+                </div>
+                <ChevronRightIcon />
+              </button>
+              {showScrapeInput && (
+                <div className="py-2 space-y-2">
+                  <input
+                    type="text"
+                    value={localUrl}
+                    onChange={e => setLocalUrl(e.target.value)}
+                    placeholder="https://www.instagram.com/reel/..."
+                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-[13px] text-white outline-none focus:border-fuchsia-500 transition-colors"
+                  />
+                  {scrapeError && <div className="text-[11px] text-red-400 px-1">{scrapeError}</div>}
+                  {scrapeSuccess && <div className="text-[11px] text-green-400 px-1">Reel scraped successfully!</div>}
+                  <button
+                    onClick={() => { onScrapeReel(localUrl) }}
+                    disabled={scraping}
+                    className="w-full py-2 rounded-xl bg-fuchsia-600 text-white text-[12px] font-medium active:opacity-80 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {scraping ? "Scraping..." : "Scrape reel"}
+                  </button>
+                </div>
+              )}
              
                            <div className="h-px bg-zinc-800" />
               <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={onToggleSources}>
@@ -2148,6 +2225,13 @@ export default function ReelInsights() {
     const overviewRef = useRef<HTMLDivElement>(null)
    const permanentGreyLine = useRef<number[]>([])
   const [graphDrawMode, setGraphDrawMode] = useState<"thisReel" | "typical" | null>(null)
+  const [apifyToken, setApifyToken] = useState<string>(() => {
+    try { return localStorage.getItem("apify-token") || "" } catch { return "" }
+  })
+  const [reelUrl, setReelUrl] = useState("")
+  const [scraping, setScraping] = useState(false)
+  const [scrapeError, setScrapeError] = useState<string | null>(null)
+  const [scrapeSuccess, setScrapeSuccess] = useState(false)
 
   const buildEngagementData = (videoDuration: string): EngagementPoint[] => {
     const totalSec = (() => { const parts = videoDuration.split(":").map(Number); return parts.length === 2 ? parts[0] * 60 + parts[1] : 31 })()
@@ -2526,6 +2610,79 @@ export default function ReelInsights() {
   setAnimateCharts(false)
   setTimeout(() => setAnimateCharts(true), 50)
 }
+  const saveApifyToken = (token: string) => {
+    setApifyToken(token)
+    try { localStorage.setItem("apify-token", token) } catch {}
+  }
+  const handleScrapeReel = async (url: string) => {
+    setScrapeError(null)
+    setScrapeSuccess(false)
+    if (!apifyToken.trim()) {
+      setScrapeError("Please set your Apify token first")
+      return
+    }
+    if (!url.trim()) {
+      setScrapeError("Please enter a reel URL")
+      return
+    }
+    setScraping(true)
+    try {
+      const res = await fetch("/api/scrape-reel", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url: url.trim(), token: apifyToken.trim() }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to scrape reel")
+      }
+      const item = data.item
+      let durationSec = 0
+      if (typeof item.videoDuration === "number") durationSec = item.videoDuration
+      else if (typeof item.videoDuration === "string") {
+        const parts = item.videoDuration.split(":").map(Number)
+        if (parts.length === 2) durationSec = parts[0] * 60 + parts[1]
+        else durationSec = parseInt(item.videoDuration) || 0
+      }
+      durationSec = Math.round(durationSec)
+      const mins = Math.floor(durationSec / 60)
+      const secs = durationSec % 60
+      const videoDuration = `${mins}:${secs.toString().padStart(2, "0")}`
+      const views = item.videoPlayCount ?? item.igPlayCount ?? item.videoViewCount ?? 0
+      const updated: InsightsData = {
+        ...insightsData,
+        caption: item.caption || insightsData.caption,
+        videoDuration,
+        publishDate: item.timestamp
+          ? new Date(item.timestamp).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+          : insightsData.publishDate,
+        likes: typeof item.likesCount === "number" ? item.likesCount : insightsData.likes,
+        comments: typeof item.commentsCount === "number" ? item.commentsCount : insightsData.comments,
+        shares: typeof item.sharesCount === "number" ? item.sharesCount : (typeof item.reshareCount === "number" ? item.reshareCount : insightsData.shares),
+        reposts: typeof item.reshareCount === "number" ? item.reshareCount : insightsData.reposts,
+        bookmarks: insightsData.bookmarks,
+        views,
+        accountsReached: getAutoAccountsReached(views),
+        avgWatchTime: getAutoAverageWatchTime(videoDuration),
+      }
+      try { localStorage.removeItem("saved-graph-data") } catch {}
+      try { localStorage.removeItem("engagement-graph-data") } catch {}
+      saveData(updated)
+      const thumb = item.displayUrl || (Array.isArray(item.images) ? item.images[0] : null)
+      if (thumb) {
+        setThumbnailUrl(thumb)
+        setThumbnailImage(thumb)
+        setRetentionThumbnail(thumb)
+        try { localStorage.setItem("shared-thumbnail", thumb) } catch {}
+      }
+      setScrapeSuccess(true)
+      setTimeout(() => setScrapeSuccess(false), 2500)
+    } catch (err: any) {
+      setScrapeError(err.message || "Failed to scrape reel")
+    } finally {
+      setScraping(false)
+    }
+  }
   const handleHeaderUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (locked) return
     const f = e.target.files?.[0]
@@ -3508,6 +3665,14 @@ export default function ReelInsights() {
             onToggleViewsNumber={() => setHideViewsNumber((p: boolean) => { const next = !p; try { localStorage.setItem("hide-views-number", JSON.stringify(next)) } catch {}; return next })}
             drawMode={graphDrawMode}
             onToggleDrawMode={(mode) => setGraphDrawMode(prev => prev === mode ? null : mode)}
+            apifyToken={apifyToken}
+            onApifyTokenChange={saveApifyToken}
+            reelUrl={reelUrl}
+            onReelUrlChange={setReelUrl}
+            onScrapeReel={handleScrapeReel}
+            scraping={scraping}
+            scrapeError={scrapeError}
+            scrapeSuccess={scrapeSuccess}
                         onToggleBanner={() => {
               const next = activeBannerType === "meta" ? "edits" : activeBannerType === "edits" ? "celebration" : "meta"
               setActiveBannerType(next)
