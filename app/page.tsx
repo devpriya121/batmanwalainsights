@@ -1394,7 +1394,7 @@ const DraggableGraph = ({
   const displayYLabels = yLabels.map((label, i) => yLabelOverrides[i] ?? label)
   const yPositions = [padding.top + chartH, padding.top + chartH / 2, padding.top]
     const getX = (i: number) => padding.left + (i / Math.max(data.length - 1, 1)) * chartW
-  const getThisReelX = (i: number) => padding.left + (i / Math.max(data.length - 1, 1)) * chartW
+  const getThisReelX = (i: number) => padding.left + (i / Math.max(data.length - 1, 1)) * (chartW * 0.75)
   const getY = (val: number) => padding.top + chartH - (Math.min(val, yAxisTop) / yAxisTop) * chartH
   const getValFromY = (clientY: number) => {
     const svg = svgRef.current
@@ -1462,10 +1462,11 @@ const DraggableGraph = ({
     }
     const isPink = drawMode === "thisReel"
     const count = isPink ? data.length : data.length
-    const getLineX = isPink ? getThisReelX : getX
+    // Draw uses full chart width; display uses 75%
+    const getDrawX = isPink ? ((i: number) => padding.left + (i / Math.max(data.length - 1, 1)) * chartW) : getX
     const next = [...data]
     for (let i = 0; i < count; i++) {
-      const targetX = getLineX(i)
+      const targetX = getDrawX(i)
       const y = interpolateY(targetX, drawPoints)
       if (y !== null) {
         next[i] = { ...next[i], [drawMode]: valueFromSvgY(y) }
@@ -1476,7 +1477,9 @@ const DraggableGraph = ({
     onDrawModeChange?.(null)
   }
 
-  const allThisReel = data.map((d, i) => ({
+  const cutoff = Math.ceil(data.length * 0.75)
+  const visiblePinkData = data.slice(0, cutoff)
+  const allThisReel = visiblePinkData.map((d, i) => ({
     x: getThisReelX(i),
     y: getY(d.thisReel),
   }))
@@ -1619,8 +1622,9 @@ const DraggableGraph = ({
     if (drawMode) return
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left
-    const relativeX = Math.max(0, Math.min(chartW, x - padding.left))
-    const index = Math.round((relativeX / chartW) * (data.length - 1))
+    const pinkWidth = chartW * 0.75
+    const relativeX = Math.max(0, Math.min(pinkWidth, x - padding.left))
+    const index = Math.round((relativeX / pinkWidth) * (visiblePinkData.length - 1))
     setActiveIndexViews(index)
   }}
 
@@ -1631,8 +1635,9 @@ const DraggableGraph = ({
     const rect = e.currentTarget.getBoundingClientRect()
     const touch = e.touches[0]
     const x = touch.clientX - rect.left
-    const relativeX = Math.max(0, Math.min(chartW, x - padding.left))
-    const index = Math.round((relativeX / chartW) * (data.length - 1))
+    const pinkWidth = chartW * 0.75
+    const relativeX = Math.max(0, Math.min(pinkWidth, x - padding.left))
+    const index = Math.round((relativeX / pinkWidth) * (visiblePinkData.length - 1))
     setActiveIndexViews(index)
   }}
 
@@ -1722,7 +1727,7 @@ const DraggableGraph = ({
           />
         )}
 
-        {data.map((d, i) => (
+        {visiblePinkData.map((d, i) => (
           <circle
             key={`tr-${i}`}
             cx={getThisReelX(i)}
@@ -1805,10 +1810,10 @@ const DraggableGraph = ({
           }}
         >
           <div style={{ fontWeight: 600, textAlign: "center" }}>
-            {data[activeIndexViews].thisReel.toLocaleString("en-IN")}
+            {visiblePinkData[activeIndexViews].thisReel.toLocaleString("en-IN")}
           </div>
           <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px", textAlign: "center" }}>
-            {data[activeIndexViews].date}
+            {visiblePinkData[activeIndexViews].date}
           </div>
         </div>
       )}
