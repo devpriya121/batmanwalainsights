@@ -2627,16 +2627,35 @@ export default function ReelInsights() {
     }
     setScraping(true)
     try {
-      const res = await fetch("/api/scrape-reel", {
+      const apifyUrl = `https://api.apify.com/v2/acts/apify~instagram-reel-scraper/run-sync-get-dataset-items?timeout=120`
+      const res = await fetch(apifyUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url.trim(), token: apifyToken.trim() }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apifyToken.trim()}`,
+        },
+        body: JSON.stringify({
+          username: [url.trim()],
+          resultsLimit: 1,
+          includeSharesCount: true,
+        }),
       })
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to scrape reel")
+      const contentType = res.headers.get("content-type")
+      if (!contentType || !contentType.includes("application/json")) {
+        const text = await res.text()
+        throw new Error(`Apify returned non-JSON response (status ${res.status}): ${text.substring(0, 200)}`)
       }
-      const item = data.item
+      const items = await res.json()
+      if (!res.ok) {
+        throw new Error(items?.error?.message || items?.error || `Apify error ${res.status}`)
+      }
+      const item = Array.isArray(items) ? items[0] : items
+      if (!item) {
+        throw new Error("No reel data returned")
+      }
+      if (item.error) {
+        throw new Error(item.errorDescription || item.error || "Scraper returned an error")
+      }
       let durationSec = 0
       if (typeof item.videoDuration === "number") durationSec = item.videoDuration
       else if (typeof item.videoDuration === "string") {
