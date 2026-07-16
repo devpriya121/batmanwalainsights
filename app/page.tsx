@@ -1377,11 +1377,8 @@ const DraggableGraph = ({
     const svg = svgRef.current
     if (!svg) return null
     const rect = svg.getBoundingClientRect()
-    let clientX = e.clientX
-    let clientY = e.clientY
-    if (e.pointerType === "touch") {
-      clientY -= 60
-    }
+    const clientX = e.clientX
+    const clientY = e.clientY
     const y = ((clientY - rect.top) / rect.height) * height
     const minY = padding.top
     const maxY = padding.top + chartH
@@ -1697,28 +1694,52 @@ const DraggableGraph = ({
         ))}
 
         {drawMode && drawPoints.length > 1 && (
-          <path
-            d={buildPath(drawPoints)}
-            fill="none"
-            stroke={drawMode === "thisReel" ? PINK : "#ffffff"}
-            strokeWidth={5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity={0.95}
-            pointerEvents="none"
-          />
+          <>
+            <path
+              d={buildPath(drawPoints)}
+              fill="none"
+              stroke={drawMode === "thisReel" ? PINK : "#ffffff"}
+              strokeWidth={12}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={0.35}
+              pointerEvents="none"
+            />
+            <path
+              d={buildPath(drawPoints)}
+              fill="none"
+              stroke={drawMode === "thisReel" ? PINK : "#ffffff"}
+              strokeWidth={6}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={1}
+              pointerEvents="none"
+            />
+          </>
         )}
 
         {drawMode && drawPoints.length > 0 && (
-          <circle
-            cx={drawPoints[drawPoints.length - 1].x}
-            cy={drawPoints[drawPoints.length - 1].y}
-            r={5}
-            fill={drawMode === "thisReel" ? PINK : "#ffffff"}
-            stroke="#0c0f14"
-            strokeWidth={2}
-            pointerEvents="none"
-          />
+          <>
+            <circle
+              cx={drawPoints[drawPoints.length - 1].x}
+              cy={drawPoints[drawPoints.length - 1].y}
+              r={10}
+              fill="none"
+              stroke={drawMode === "thisReel" ? PINK : "#ffffff"}
+              strokeWidth={2}
+              opacity={0.6}
+              pointerEvents="none"
+            />
+            <circle
+              cx={drawPoints[drawPoints.length - 1].x}
+              cy={drawPoints[drawPoints.length - 1].y}
+              r={4}
+              fill={drawMode === "thisReel" ? PINK : "#ffffff"}
+              stroke="#0c0f14"
+              strokeWidth={2}
+              pointerEvents="none"
+            />
+          </>
         )}
       </svg>
 
