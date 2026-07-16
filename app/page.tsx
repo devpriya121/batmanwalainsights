@@ -1288,7 +1288,7 @@ mapped.push({
 });
 }
 
-   const visibleEndIndex = mapped.length - 1
+   const visibleEndIndex = Math.ceil(mapped.length * 0.75) - 1
 
   if (visibleEndIndex >= 0 && visibleEndIndex < mapped.length) {
     mapped[visibleEndIndex] = {
