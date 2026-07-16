@@ -703,6 +703,7 @@ const BottomSheet = ({
               </div>
             )}
             <div className="bg-[#1c1c1e] pb-[env(safe-area-inset-bottom)]" />
+            </div>
           </motion.div>
         </>
       )}
