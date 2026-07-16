@@ -482,6 +482,8 @@ const BottomSheet = ({
   onToggleViewsNumber,
   drawMode,
   onToggleDrawMode,
+  engagementDrawMode,
+  onToggleEngagementDrawMode,
   apifyToken,
   onApifyTokenChange,
   reelUrl,
@@ -507,6 +509,8 @@ const BottomSheet = ({
   onToggleViewsNumber: () => void
   drawMode: "thisReel" | "typical" | null
   onToggleDrawMode: (mode: "thisReel" | "typical") => void
+  engagementDrawMode: "engagement" | null
+  onToggleEngagementDrawMode: () => void
   apifyToken: string
   onApifyTokenChange: (token: string) => void
   reelUrl: string
@@ -564,175 +568,140 @@ const BottomSheet = ({
               <div className="w-10 h-1 bg-zinc-600 rounded-full" />
             </div>
             <div className="bg-[#1c1c1e] px-4 pb-4 max-h-[50vh] overflow-y-auto">
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => setShowPinkEditor(p => !p)}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: PINK }} />
-                  </div>
-                  <span className="text-[13px] text-white">Edit pink line</span>
+              <div className="grid grid-cols-2 gap-3 py-2">
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => setShowPinkEditor(p => !p)}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: PINK }} />
                 </div>
-                <ChevronRightIcon />
+                <span className="text-[11px] text-white text-center leading-tight">Edit pink line</span>
               </button>
-              {showPinkEditor && (
-                <div className="py-2">
-                  <PinkLineEditor data={graphData} onChange={onUpdateGraph} yAxisTop={yAxisTop} />
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onToggleDrawMode("thisReel"); onClose() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={drawMode === "thisReel" ? PINK : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
                 </div>
-              )}
-              <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleDrawMode("thisReel"); onClose() }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={drawMode === "thisReel" ? PINK : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-                  </div>
-                  <span className="text-[13px] text-white">{drawMode === "thisReel" ? "Stop drawing pink line" : "Draw pink line"}</span>
-                </div>
-                <ChevronRightIcon />
+                <span className="text-[11px] text-white text-center leading-tight">{drawMode === "thisReel" ? "Stop draw pink" : "Draw pink line"}</span>
               </button>
-                            <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleViewsNumber(); onClose() }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </div>
-                  <span className="text-[13px] text-white">{hideViewsNumber ? "Show views number" : "Hide views number"}</span>
+                            <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onToggleViewsNumber(); onClose() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </div>
-                <ChevronRightIcon />
+                <span className="text-[11px] text-white text-center leading-tight">{hideViewsNumber ? "Show views" : "Hide views"}</span>
               </button>
-              <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleLock(); onClose() }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <div className="w-3 h-3 rounded-full bg-[#8a8a8a]" />
-                  </div>
-                  <span className="text-[13px] text-white">Edit typical line</span>
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onToggleLock(); onClose() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <div className="w-3 h-3 rounded-full bg-[#8a8a8a]" />
                 </div>
-                <ChevronRightIcon />
-              </button>
-              {showGreyEditor && (
-                <div className="py-2">
-                  <GreyLineEditor data={graphData} onChange={onUpdateGraph} yAxisTop={yAxisTop} onSaveGrey={values => {
-                    try { localStorage.setItem("saved-grey-line", JSON.stringify(values)) } catch {}
-                  }} />
-                </div>
-              )}
-              <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleDrawMode("typical"); onClose() }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={drawMode === "typical" ? "#8a8a8a" : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
-                  </div>
-                  <span className="text-[13px] text-white">{drawMode === "typical" ? "Stop drawing grey line" : "Draw grey line"}</span>
-                </div>
-                <ChevronRightIcon />
-              </button>
-              <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onClose(); onOpenEditor() }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
-                  </div>
-                  <span className="text-[13px] text-white">Edit insights</span>
-                </div>
-                <ChevronRightIcon />
-              </button>
-              <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { setShowTokenInput(p => !p); setShowScrapeInput(false) }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                  </div>
-                  <span className="text-[13px] text-white">{apifyToken ? "Change Apify token" : "Set Apify token"}</span>
-                </div>
-                <ChevronRightIcon />
-              </button>
-              {showTokenInput && (
-                <div className="py-2 space-y-2">
-                  <input
-                    type="text"
-                    value={localToken}
-                    onChange={e => setLocalToken(e.target.value)}
-                    placeholder="Paste Apify API token"
-                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-[13px] text-white outline-none focus:border-fuchsia-500 transition-colors"
-                  />
-                  <button
-                    onClick={() => { onApifyTokenChange(localToken); setShowTokenInput(false) }}
-                    className="w-full py-2 rounded-xl bg-fuchsia-600 text-white text-[12px] font-medium active:opacity-80 transition-opacity"
-                  >
-                    Save token
-                  </button>
-                </div>
-              )}
-              <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { setShowScrapeInput(p => !p); setShowTokenInput(false) }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                  </div>
-                  <span className="text-[13px] text-white">Scrape reel from URL</span>
-                </div>
-                <ChevronRightIcon />
-              </button>
-              {showScrapeInput && (
-                <div className="py-2 space-y-2">
-                  <input
-                    type="text"
-                    value={localUrl}
-                    onChange={e => setLocalUrl(e.target.value)}
-                    placeholder="https://www.instagram.com/reel/..."
-                    className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-[13px] text-white outline-none focus:border-fuchsia-500 transition-colors"
-                  />
-                  {scrapeError && <div className="text-[11px] text-red-400 px-1">{scrapeError}</div>}
-                  {scrapeSuccess && <div className="text-[11px] text-green-400 px-1">Reel scraped successfully!</div>}
-                  <button
-                    onClick={() => { onScrapeReel(localUrl) }}
-                    disabled={scraping}
-                    className="w-full py-2 rounded-xl bg-fuchsia-600 text-white text-[12px] font-medium active:opacity-80 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {scraping ? "Scraping..." : "Scrape reel"}
-                  </button>
-                </div>
-              )}
-             
-                           <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={onToggleSources}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                  </div>
-                  <span className="text-[13px] text-white">{sourcesMode === "all" ? "Show 3 sources only" : "Show all sources"}</span>
-                </div>
-                <ChevronRightIcon />
+                <span className="text-[11px] text-white text-center leading-tight">Edit typical line</span>
               </button>
 
-                           <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleBanner(); onClose() }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="3"/>
-                    </svg>
-                  </div>
-                                    <span className="text-[13px] text-white">
-                    {activeBannerType === "meta" ? "Switch to Get Edits banner" : activeBannerType === "edits" ? "Switch to Celebration banner" : "Switch to Meta Verified banner"}
-                  </span>
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onToggleDrawMode("typical"); onClose() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={drawMode === "typical" ? "#8a8a8a" : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
                 </div>
-                <ChevronRightIcon />
+                <span className="text-[11px] text-white text-center leading-tight">{drawMode === "typical" ? "Stop draw grey" : "Draw grey line"}</span>
               </button>
-              <div className="h-px bg-zinc-800" />
-              <button className="w-full flex items-center justify-between py-3 active:opacity-60 transition-opacity" onClick={() => { onToggleLock(); onClose() }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                    {locked ? (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" /></svg>
-                    ) : (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
-                    )}
-                  </div>
-                  <span className="text-[13px] text-white">{locked ? "Unlock editing" : "Lock editing"}</span>
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onClose(); onOpenEditor() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                 </div>
-                <ChevronRightIcon />
+                <span className="text-[11px] text-white text-center leading-tight">Edit insights</span>
+              </button>
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { setShowTokenInput(p => !p); setShowScrapeInput(false) }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                </div>
+                <span className="text-[11px] text-white text-center leading-tight">{apifyToken ? "Apify token" : "Set Apify"}</span>
+              </button>
+
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { setShowScrapeInput(p => !p); setShowTokenInput(false) }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                </div>
+                <span className="text-[11px] text-white text-center leading-tight">Scrape reel</span>
+              </button>
+
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={onToggleSources}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                </div>
+                <span className="text-[11px] text-white text-center leading-tight">{sourcesMode === "all" ? "3 sources" : "All sources"}</span>
+              </button>
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onToggleBanner(); onClose() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="3"/>
+                  </svg>
+                </div>
+                <span className="text-[11px] text-white text-center leading-tight">
+                  {activeBannerType === "meta" ? "Edits banner" : activeBannerType === "edits" ? "Celebration" : "Meta Verified"}
+                </span>
+              </button>
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onToggleEngagementDrawMode(); onClose() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={engagementDrawMode === "engagement" ? PINK : "white"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+                </div>
+                <span className="text-[11px] text-white text-center leading-tight">{engagementDrawMode ? "Stop draw" : "Draw likes"}</span>
+              </button>
+              <button className="flex flex-col items-center justify-center gap-2 py-3 px-2 rounded-xl bg-zinc-800/50 active:opacity-60 transition-opacity" onClick={() => { onToggleLock(); onClose() }}>
+                <div className="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center">
+                  {locked ? (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 9.9-1" /></svg>
+                  ) : (
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                  )}
+                </div>
+                <span className="text-[11px] text-white text-center leading-tight">{locked ? "Unlock" : "Lock"}</span>
               </button>
             </div>
+            {showPinkEditor && (
+              <div className="px-4 pb-3">
+                <PinkLineEditor data={graphData} onChange={onUpdateGraph} yAxisTop={yAxisTop} />
+              </div>
+            )}
+            {showGreyEditor && (
+              <div className="px-4 pb-3">
+                <GreyLineEditor data={graphData} onChange={onUpdateGraph} yAxisTop={yAxisTop} onSaveGrey={values => {
+                  try { localStorage.setItem("saved-grey-line", JSON.stringify(values)) } catch {}
+                }} />
+              </div>
+            )}
+            {showTokenInput && (
+              <div className="px-4 pb-3 space-y-2">
+                <input
+                  type="text"
+                  value={localToken}
+                  onChange={e => setLocalToken(e.target.value)}
+                  placeholder="Paste Apify API token"
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-[13px] text-white outline-none focus:border-fuchsia-500 transition-colors"
+                />
+                <button
+                  onClick={() => { onApifyTokenChange(localToken); setShowTokenInput(false) }}
+                  className="w-full py-2 rounded-xl bg-fuchsia-600 text-white text-[12px] font-medium active:opacity-80 transition-opacity"
+                >
+                  Save token
+                </button>
+              </div>
+            )}
+            {showScrapeInput && (
+              <div className="px-4 pb-3 space-y-2">
+                <input
+                  type="text"
+                  value={localUrl}
+                  onChange={e => setLocalUrl(e.target.value)}
+                  placeholder="https://www.instagram.com/reel/..."
+                  className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2.5 text-[13px] text-white outline-none focus:border-fuchsia-500 transition-colors"
+                />
+                {scrapeError && <div className="text-[11px] text-red-400 px-1">{scrapeError}</div>}
+                {scrapeSuccess && <div className="text-[11px] text-green-400 px-1">Reel scraped successfully!</div>}
+                <button
+                  onClick={() => { onScrapeReel(localUrl) }}
+                  disabled={scraping}
+                  className="w-full py-2 rounded-xl bg-fuchsia-600 text-white text-[12px] font-medium active:opacity-80 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {scraping ? "Scraping..." : "Scrape reel"}
+                </button>
+              </div>
+            )}
             <div className="bg-[#1c1c1e] pb-[env(safe-area-inset-bottom)]" />
           </motion.div>
         </>
@@ -1318,7 +1287,7 @@ mapped.push({
 });
 }
 
-   const visibleEndIndex = Math.ceil(mapped.length * 0.75) - 1
+   const visibleEndIndex = mapped.length - 1
 
   if (visibleEndIndex >= 0 && visibleEndIndex < mapped.length) {
     mapped[visibleEndIndex] = {
@@ -1424,7 +1393,7 @@ const DraggableGraph = ({
   const displayYLabels = yLabels.map((label, i) => yLabelOverrides[i] ?? label)
   const yPositions = [padding.top + chartH, padding.top + chartH / 2, padding.top]
     const getX = (i: number) => padding.left + (i / Math.max(data.length - 1, 1)) * chartW
-  const getThisReelX = (i: number) => padding.left + (i / Math.max(data.length - 1, 1)) * (chartW * 0.75)
+  const getThisReelX = (i: number) => padding.left + (i / Math.max(data.length - 1, 1)) * chartW
   const getY = (val: number) => padding.top + chartH - (Math.min(val, yAxisTop) / yAxisTop) * chartH
   const getValFromY = (clientY: number) => {
     const svg = svgRef.current
@@ -1491,7 +1460,7 @@ const DraggableGraph = ({
       return
     }
     const isPink = drawMode === "thisReel"
-    const count = isPink ? visiblePinkData.length : data.length
+    const count = isPink ? data.length : data.length
     const getLineX = isPink ? getThisReelX : getX
     const next = [...data]
     for (let i = 0; i < count; i++) {
@@ -1506,9 +1475,7 @@ const DraggableGraph = ({
     onDrawModeChange?.(null)
   }
 
-    const cutoff = Math.ceil(data.length * 0.75)
-  const visiblePinkData = data.slice(0, cutoff)
-  const allThisReel = visiblePinkData.map((d, i) => ({
+  const allThisReel = data.map((d, i) => ({
     x: getThisReelX(i),
     y: getY(d.thisReel),
   }))
@@ -1651,9 +1618,8 @@ const DraggableGraph = ({
     if (drawMode) return
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left
-    const pinkWidth = chartW * 0.75
-    const relativeX = Math.max(0, Math.min(pinkWidth, x - padding.left))
-    const index = Math.round((relativeX / pinkWidth) * (visiblePinkData.length - 1))
+    const relativeX = Math.max(0, Math.min(chartW, x - padding.left))
+    const index = Math.round((relativeX / chartW) * (data.length - 1))
     setActiveIndexViews(index)
   }}
 
@@ -1664,9 +1630,8 @@ const DraggableGraph = ({
     const rect = e.currentTarget.getBoundingClientRect()
     const touch = e.touches[0]
     const x = touch.clientX - rect.left
-    const pinkWidth = chartW * 0.75
-    const relativeX = Math.max(0, Math.min(pinkWidth, x - padding.left))
-    const index = Math.round((relativeX / pinkWidth) * (visiblePinkData.length - 1))
+    const relativeX = Math.max(0, Math.min(chartW, x - padding.left))
+    const index = Math.round((relativeX / chartW) * (data.length - 1))
     setActiveIndexViews(index)
   }}
 
@@ -1756,7 +1721,7 @@ const DraggableGraph = ({
           />
         )}
 
-        {visiblePinkData.map((d, i) => (
+        {data.map((d, i) => (
           <circle
             key={`tr-${i}`}
             cx={getThisReelX(i)}
@@ -1839,10 +1804,10 @@ const DraggableGraph = ({
           }}
         >
           <div style={{ fontWeight: 600, textAlign: "center" }}>
-            {visiblePinkData[activeIndexViews].thisReel.toLocaleString("en-IN")}
+            {data[activeIndexViews].thisReel.toLocaleString("en-IN")}
           </div>
           <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px", textAlign: "center" }}>
-            {visiblePinkData[activeIndexViews].date}
+            {data[activeIndexViews].date}
           </div>
         </div>
       )}
@@ -1869,9 +1834,11 @@ const DraggableGraph = ({
 
 // ===== DRAGGABLE ENGAGEMENT GRAPH =====
 type EngagementPoint = { time: string; value: number }
-const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { data: EngagementPoint[]; onChange: (d: EngagementPoint[]) => void; locked: boolean; videoDuration: string }) => {
+const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration, drawMode, onDrawModeChange }: { data: EngagementPoint[]; onChange: (d: EngagementPoint[]) => void; locked: boolean; videoDuration: string; drawMode?: "engagement" | null; onDrawModeChange?: (mode: "engagement" | null) => void }) => {
   const svgRef = useRef<SVGSVGElement>(null)
   const [dragging, setDragging] = useState<number | null>(null)
+  const [drawPoints, setDrawPoints] = useState<{ x: number; y: number }[]>([])
+  const isDrawingRef = useRef(false)
  const [activeIndexEngagement, setActiveIndexEngagement] = useState<number | null>(null)
   const [editingRightX, setEditingRightX] = useState(false)
   const [rightXValue, setRightXValue] = useState("")
@@ -1895,6 +1862,13 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
     }
   }, [editingY])
 
+  useEffect(() => {
+    if (!drawMode) {
+      isDrawingRef.current = false
+      setDrawPoints([])
+    }
+  }, [drawMode])
+
   const padding = { top: 15, right: 10, bottom: 38, left: 44 };
   const width = 380; const height = 200;
     const chartW = width - padding.left - padding.right; const chartH = height - padding.top - padding.bottom;
@@ -1903,11 +1877,45 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
   const getX = (i: number) => (padding.left + 12) + (i / Math.max(data.length - 1, 1)) * (chartW - 12);
   const getY = (val: number) => padding.top + chartH - (Math.min(val, 100) / 100) * chartH;
   const getValFromY = (clientY: number) => { const svg = svgRef.current; if (!svg) return 0; const rect = svg.getBoundingClientRect(); const svgY = ((clientY - rect.top) / rect.height) * height; return Math.max(0, Math.min(100, Math.round(((padding.top + chartH - svgY) / chartH) * 100))) }
-  const buildPath = (points: { x: number; y: number }[]) => { if (points.length < 2) return ""; let d = `M ${points[0].x} ${points[0].y}`; for (let i = 1; i < points.length; i++) d += ` L ${points[i].x} ${points[i].y}`; return d }
+  const buildPath = (pts: { x: number; y: number }[]) => { if (pts.length < 2) return ""; let d = `M ${pts[0].x} ${pts[0].y}`; for (let i = 1; i < pts.length; i++) d += ` L ${pts[i].x} ${pts[i].y}`; return d }
+
+  const getDrawSvgPoint = (e: React.PointerEvent) => {
+    const svg = svgRef.current; if (!svg) return null
+    const rect = svg.getBoundingClientRect()
+    const y = ((e.clientY - rect.top) / rect.height) * height
+    return { x: ((e.clientX - rect.left) / rect.width) * width, y: Math.max(padding.top, Math.min(padding.top + chartH, y)) }
+  }
+  const valueFromSvgY = (svgY: number) => Math.max(0, Math.min(100, Math.round(((padding.top + chartH - svgY) / chartH) * 100)))
+  const interpolateEngY = (targetX: number, pts: { x: number; y: number }[]) => {
+    if (pts.length === 0) return null
+    const sorted = [...pts].sort((a, b) => a.x - b.x)
+    if (targetX <= sorted[0].x) return sorted[0].y
+    if (targetX >= sorted[sorted.length - 1].x) return sorted[sorted.length - 1].y
+    for (let i = 0; i < sorted.length - 1; i++) {
+      if (targetX >= sorted[i].x && targetX <= sorted[i + 1].x) {
+        const t = (targetX - sorted[i].x) / (sorted[i + 1].x - sorted[i].x)
+        return sorted[i].y + t * (sorted[i + 1].y - sorted[i].y)
+      }
+    }
+    return null
+  }
+  const applyDrawnLine = () => {
+    if (!drawMode || drawPoints.length < 2) { setDrawPoints([]); return }
+    const next = [...data]
+    for (let i = 0; i < data.length; i++) {
+      const tgY = interpolateEngY(getX(i), drawPoints)
+      if (tgY !== null) next[i] = { ...next[i], value: valueFromSvgY(tgY) }
+    }
+    onChange(next)
+    try { localStorage.setItem("engagement-graph-data", JSON.stringify(next)) } catch {}
+    setDrawPoints([])
+    onDrawModeChange?.(null)
+  }
+
   const points = data.map((d, i) => ({ x: getX(i), y: getY(d.value) }))
   const pathD = buildPath(points)
-  const handlePointerDown = (index: number, e: React.PointerEvent) => { if (locked) return; e.preventDefault(); e.stopPropagation(); (e.target as Element).setPointerCapture?.(e.pointerId); setDragging(index) }
-  const handlePointerMove = (e: React.PointerEvent) => { if (dragging === null || locked) return; e.preventDefault(); const val = getValFromY(e.clientY); const nd = [...data]; nd[dragging] = { ...nd[dragging], value: val }; onChange(nd) }
+  const handlePointerDown = (index: number, e: React.PointerEvent) => { if (locked || drawMode) return; e.preventDefault(); e.stopPropagation(); (e.target as Element).setPointerCapture?.(e.pointerId); setDragging(index) }
+  const handlePointerMove = (e: React.PointerEvent) => { if (dragging === null || locked || drawMode) return; e.preventDefault(); const val = getValFromY(e.clientY); const nd = [...data]; nd[dragging] = { ...nd[dragging], value: val }; onChange(nd) }
   const handlePointerUp = () => setDragging(null)
   const lastIdx = data.length - 1
   const commitRightX = () => { if (rightXValue.trim()) { const nd = [...data]; nd[lastIdx] = { ...nd[lastIdx], time: rightXValue.trim() }; onChange(nd) }; setEditingRightX(false) }
@@ -1951,11 +1959,58 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
   ref={svgRef}
   viewBox={`0 0 ${width} ${height}`}
   className={`w-full select-none ${locked ? "" : "touch-none"}`}
-  onPointerMove={handlePointerMove}
-  onPointerUp={handlePointerUp}
-  onPointerLeave={handlePointerUp}
+  style={{ cursor: drawMode ? "crosshair" : undefined }}
+  onPointerDown={(e) => {
+    if (!drawMode || locked) return
+    e.preventDefault()
+    const p = getDrawSvgPoint(e)
+    if (!p) return
+    isDrawingRef.current = true
+    setDrawPoints([p])
+  }}
+  onPointerMove={(e) => {
+    if (drawMode && isDrawingRef.current) {
+      if (locked) return
+      e.preventDefault()
+      const p = getDrawSvgPoint(e)
+      if (!p) return
+      setDrawPoints(prev => {
+        const last = prev[prev.length - 1]
+        const dist = last ? Math.hypot(p.x - last.x, p.y - last.y) : Infinity
+        if (dist < 2) return prev
+        return [...prev, p]
+      })
+      return
+    }
+    handlePointerMove(e)
+  }}
+  onPointerUp={() => {
+    if (drawMode && isDrawingRef.current) {
+      isDrawingRef.current = false
+      applyDrawnLine()
+      return
+    }
+    handlePointerUp()
+  }}
+  onPointerLeave={() => {
+    if (drawMode && isDrawingRef.current) {
+      isDrawingRef.current = false
+      applyDrawnLine()
+      return
+    }
+    handlePointerUp()
+  }}
+  onPointerCancel={() => {
+    if (drawMode) {
+      isDrawingRef.current = false
+      setDrawPoints([])
+      return
+    }
+    handlePointerUp()
+  }}
 
   onMouseMove={(e) => {
+    if (drawMode) return
     const rect = e.currentTarget.getBoundingClientRect()
     const x = e.clientX - rect.left
     const index = Math.round((x / rect.width) * (data.length - 1))
@@ -1965,6 +2020,7 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
   onMouseLeave={() => setActiveIndexEngagement(null)}
 
   onTouchMove={(e) => {
+    if (drawMode) return
     const rect = e.currentTarget.getBoundingClientRect()
     const touch = e.touches[0]
     const x = touch.clientX - rect.left
@@ -2009,7 +2065,7 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
         ))}
                                                     <path d={pathD} fill="none" stroke={PINK} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round" />
 
-        {activeIndexEngagement !== null && (
+        {activeIndexEngagement !== null && !drawMode && (
   <line
     x1={getX(activeIndexEngagement)}
     x2={getX(activeIndexEngagement)}
@@ -2022,10 +2078,59 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
   />
 )}
 
-        {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.value)} r={18} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} />)}
+        {data.map((d, i) => <circle key={i} cx={getX(i)} cy={getY(d.value)} r={18} fill="transparent" className={locked ? "cursor-default" : "cursor-grab active:cursor-grabbing"} onPointerDown={e => handlePointerDown(i, e)} style={{ touchAction: "none" }} pointerEvents={drawMode ? "none" : "all"} />)}
+
+        {drawMode && drawPoints.length > 1 && (
+          <>
+            <path
+              d={buildPath(drawPoints)}
+              fill="none"
+              stroke={PINK}
+              strokeWidth={12}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={0.35}
+              pointerEvents="none"
+            />
+            <path
+              d={buildPath(drawPoints)}
+              fill="none"
+              stroke={PINK}
+              strokeWidth={6}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={1}
+              pointerEvents="none"
+            />
+          </>
+        )}
+
+        {drawMode && drawPoints.length > 0 && (
+          <>
+            <circle
+              cx={drawPoints[drawPoints.length - 1].x}
+              cy={drawPoints[drawPoints.length - 1].y}
+              r={10}
+              fill="none"
+              stroke={PINK}
+              strokeWidth={2}
+              opacity={0.6}
+              pointerEvents="none"
+            />
+            <circle
+              cx={drawPoints[drawPoints.length - 1].x}
+              cy={drawPoints[drawPoints.length - 1].y}
+              r={4}
+              fill={PINK}
+              stroke="#0c0f14"
+              strokeWidth={2}
+              pointerEvents="none"
+            />
+          </>
+        )}
       </svg>
 
-                        {activeIndexEngagement !== null && (
+                        {activeIndexEngagement !== null && !drawMode && (
         <div
           style={{
             position: "absolute",
@@ -2049,6 +2154,12 @@ const DraggableEngagementGraph = ({ data, onChange, locked, videoDuration }: { d
           <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px", textAlign: "center" }}>
             {data[activeIndexEngagement].time}
           </div>
+        </div>
+      )}
+
+      {drawMode && (
+        <div className="mt-3 pl-4 text-[10px] text-zinc-400">
+          Draw the pink line on the chart
         </div>
       )}
     </div>
@@ -2225,6 +2336,7 @@ export default function ReelInsights() {
     const overviewRef = useRef<HTMLDivElement>(null)
    const permanentGreyLine = useRef<number[]>([])
   const [graphDrawMode, setGraphDrawMode] = useState<"thisReel" | "typical" | null>(null)
+  const [engagementDrawMode, setEngagementDrawMode] = useState<"engagement" | null>(null)
   const [apifyToken, setApifyToken] = useState<string>(() => {
     try { return localStorage.getItem("apify-token") || "" } catch { return "" }
   })
@@ -3503,7 +3615,7 @@ export default function ReelInsights() {
                         <div className="absolute inset-0 flex items-center justify-center pointer-events-none"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"/></svg></div>
                       </div>
                     </div>
-                    {engagementData.length > 0 && <DraggableEngagementGraph data={engagementData} onChange={handleEngagementChange} locked={locked} videoDuration={insightsData.videoDuration} />}
+                    {engagementData.length > 0 && <DraggableEngagementGraph data={engagementData} onChange={handleEngagementChange} locked={locked} videoDuration={insightsData.videoDuration} drawMode={engagementDrawMode} onDrawModeChange={setEngagementDrawMode} />}
                   </section>
                 </motion.div>
               )}
@@ -3684,6 +3796,8 @@ export default function ReelInsights() {
             onToggleViewsNumber={() => setHideViewsNumber((p: boolean) => { const next = !p; try { localStorage.setItem("hide-views-number", JSON.stringify(next)) } catch {}; return next })}
             drawMode={graphDrawMode}
             onToggleDrawMode={(mode) => setGraphDrawMode(prev => prev === mode ? null : mode)}
+            engagementDrawMode={engagementDrawMode}
+            onToggleEngagementDrawMode={() => setEngagementDrawMode(prev => prev === "engagement" ? null : "engagement")}
             apifyToken={apifyToken}
             onApifyTokenChange={saveApifyToken}
             reelUrl={reelUrl}
